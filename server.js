@@ -65,7 +65,7 @@ io.on("connection", (socket) => {
     rooms[roomId].players.push(socket.id);
     rooms[roomId].moves = [];
     let turn;
-    if (!rooms[roomId].firstTurn) {
+    if (rooms[roomId].firstTurn === undefined) {
       turn = Math.random() < 0.5 ? 0 : 1;
     } else {
       turn = 1 - rooms[roomId].firstTurn;
@@ -92,7 +92,7 @@ io.on("connection", (socket) => {
       socket.emit("game_message", "It is not your turn");
       return;
     }
-    if (room.moves[index]) {
+    if (room.moves[index] !== undefined) {
       socket.emit("game_message", "Invalid move");
       return;
     }
@@ -102,7 +102,7 @@ io.on("connection", (socket) => {
     io.to(roomId).emit("move_made", {
       currentTurn: room.players[room.currentTurn],
       moves: room.moves.map((move) =>
-        move === room.firstTurn ? "X" : move ? "O" : null
+        move === undefined ? undefined : move === room.firstTurn ? "X" : "O"
       ),
       winner:
         winner === 0
@@ -138,7 +138,7 @@ function checkWhinner(moves) {
   if (moves.length > 3) {
     for (let condition of winningCondition) {
       if (
-        moves[condition[0]] &&
+        moves[condition[0]] !== undefined &&
         moves[condition[0]] === moves[condition[1]] &&
         moves[condition[1]] === moves[condition[2]]
       ) {
@@ -148,7 +148,7 @@ function checkWhinner(moves) {
   }
   let filled = 0;
   for (let move of moves) {
-    if (move) {
+    if (move !== undefined) {
       filled++;
     }
   }

@@ -32,13 +32,15 @@ function mousePressed() {
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
       if (
-        relativeX > -TILE_SIZE / 2 + i * TILE_SIZE &&
-        relativeX < TILE_SIZE / 2 + i * TILE_SIZE &&
-        relativeY > -TILE_SIZE / 2 + j * TILE_SIZE &&
-        relativeY < TILE_SIZE / 2 + j * TILE_SIZE
+        relativeX > -TILE_SIZE / 2 + j * TILE_SIZE &&
+        relativeX < TILE_SIZE / 2 + j * TILE_SIZE &&
+        relativeY > -TILE_SIZE / 2 + i * TILE_SIZE &&
+        relativeY < TILE_SIZE / 2 + i * TILE_SIZE
       ) {
         console.log("Clicked on tile", currentTile);
-        makeMove(currentTile);
+        if (!choices[currentTile]) {
+          makeMove(currentTile);
+        }
         return;
       }
       currentTile++;
@@ -86,8 +88,8 @@ function draw() {
   }
 
   let currentTile = 0;
-  for (let i = -1; i <= 1; i++) {
-    for (let j = -1; j <= 1; j++) {
+  for (let j = -1; j <= 1; j++) {
+    for (let i = -1; i <= 1; i++) {
       if (choices[currentTile] === "O") {
         circle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE / 2);
       } else if (choices[currentTile] === "X") {
