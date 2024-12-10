@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <title>Multiplayer Games</title>
   <script src="p5.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" type="text/css" href="style.css" />
@@ -14,11 +15,11 @@
 
 <body>
   <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;  margin: 8px;" id="info">
-    <h1>TIC TAC TOE</h1>
-    <p style="margin: 0;">Welcome to Tic-Tac-Toe Multiplayer!</p>
+    <h1 style="margin-bottom: 4px;">TIC TAC TOE</h1>
+    <p style="margin: 0; margin-bottom: 8px; color: #555;">Welcome to Tic-Tac-Toe Multiplayer!</p>
     <div class="loader" id="connecting" style="display: none;"></div>
     <div id="waiting" style="align-items: center; justify-content: center; flex-direction: column; display: none;">
-      <p style="margin: 0;">
+      <p style="margin: 0; color:blueviolet;">
         Waiting for another player to join...
       </p>
       <p id="roomId" style="font-weight: bold; text-align: center; font-size: large; background-color: blueviolet; border-radius: 8px; padding: 4px 12px; color: white;">
@@ -38,7 +39,13 @@
   </div>
   <div style="align-items: center; flex-direction: column; gap: 8px; display: none;" id="game">
     <main></main>
-    <button onclick="exitGame()" style="background-color: brown; width: 400px;">Leave Game</button>
+    <p style="display: none; margin: 0;" id="play_again_message">
+      Opponent reqeusted to play again. Do you want to play again?
+    </p>
+    <div style="display: flex; width: 400px; gap: 4px; align-items: center; justify-content: center;">
+      <button onclick="exitGame()" style="background-color: brown;">Leave Game</button>
+      <button id="play_again" onclick="playAgain()">Play Again</button>
+    </div>
   </div>
   <script src="sketch.js"></script>
   <script src="socket.js"></script>

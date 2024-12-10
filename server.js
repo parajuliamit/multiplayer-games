@@ -122,6 +122,47 @@ io.on("connection", (socket) => {
     leaveRoom(socket.id);
   });
 
+  socket.on("play_again_request", () => {
+    const roomId = players[socket.id];
+    if (!roomId) {
+      socket.emit("room_join_error", "You are not part of any room");
+      return;
+    }
+    const room = rooms[roomId];
+    if (room.players.length < 2) {
+      socket.emit("game_message", "Opponent left the room");
+      return;
+    }
+
+    if (room.players[0] === socket.id) {
+      socket.to(room.players[1]).emit("play_again_request");
+      socket.emit("waiting_opponent", roomId);
+    } else {
+      socket.to(room.players[0]).emit("play_again_request");
+      socket.emit("waiting_opponent", roomId);
+    }
+  });
+
+  socket.on("play_again_accept", () => {
+    const roomId = players[socket.id];
+    if (!roomId) {
+      socket.emit("room_join_error", "You are not part of any room");
+      return;
+    }
+    const room = rooms[roomId];
+    if (room.players.length < 2) {
+      socket.emit("game_message", "Opponent left the room");
+      return;
+    }
+    room.moves = [];
+    room.currentTurn = 1 - room.firstTurn;
+    room.firstTurn = room.currentTurn;
+    io.to(roomId).emit("player_joined", {
+      roomId,
+      currentTurn: rooms[roomId].players[room.firstTurn],
+    });
+  });
+
   // Disconnect handling
   socket.on("disconnect", () => {
     leaveRoom(socket.id);

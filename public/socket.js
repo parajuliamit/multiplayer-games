@@ -9,12 +9,29 @@ const join_error = document.getElementById("join_error");
 const loading_div = document.getElementById("connecting");
 
 function exitGame() {
+  if (!confirm("Are you sure you want to leave the game?")) {
+    return;
+  }
   socket.emit("leave_room");
   create_div.style.display = "flex";
   wait_div.style.display = "none";
   info.style.display = "flex";
   game.style.display = "none";
   loading_div.style.display = "none";
+  play_again_message.style.display = "none";
+}
+
+function playAgain() {
+  info.style.display = "flex";
+  loading_div.style.display = "flex";
+  if (play_again_message.style.display === "flex") {
+    play_again_message.style.display = "none";
+    socket.emit("play_again_accept");
+  } else {
+    socket.emit("play_again_request");
+    create_div.style.display = "none";
+    game.style.display = "none";
+  }
 }
 
 create_button.addEventListener("click", () => {
@@ -66,6 +83,18 @@ socket.on("room_created", (roomId) => {
   document.getElementById("roomIdText").innerText = roomId;
 });
 
+socket.on("waiting_opponent", (roomId) => {
+  console.log("Waiting in room with ID:", roomId);
+  loading_div.style.display = "none";
+  wait_div.style.display = "flex";
+  document.getElementById("roomIdText").innerText = roomId;
+});
+
+socket.on("play_again_request", () => {
+  console.log("Play again requested");
+  play_again_message.style.display = "flex";
+});
+
 socket.on("room_create_error", (message) => {
   console.log("Room create error:", message);
   loading_div.style.display = "none";
@@ -83,6 +112,7 @@ socket.on("room_join_error", (message) => {
 socket.on("player_joined", ({ roomId, currentTurn }) => {
   info.style.display = "none";
   game.style.display = "flex";
+  play_again.style.display = "none";
   reset(currentTurn === socket.id);
   console.log("Player joined room:", roomId);
 });
@@ -106,6 +136,19 @@ socket.on("move_made", (result) => {
         : result.winner === socket.id
         ? "You Won !!"
         : "Opponent Won :(";
+    play_again.style.display = "block";
   }
   updateMoveData(result.currentTurn === socket.id, result.moves, winner);
+});
+
+socket.on("disconnect", () => {
+  console.log("Disconnected from server");
+  loading_div.style.display = "none";
+  wait_div.style.display = "none";
+  info.style.display = "flex";
+  game.style.display = "none";
+  play_again_message.style.display = "none";
+  create_div.style.display = "flex";
+  join_error.innerText = "Disconnected from server";
+  socket.connect();
 });

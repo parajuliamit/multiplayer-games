@@ -27,6 +27,7 @@ input[type="text"] {
   box-sizing: border-box;
   text-align: center;
   font-size: large;
+  max-width: 300px;
 }
 
 input[type="text"]:focus {
@@ -48,6 +49,7 @@ button {
   cursor: pointer;
   border-radius: 8px;
   width: 100%;
+  max-width: 300px;
 }
 
 .error {
