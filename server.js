@@ -1,10 +1,16 @@
 const express = require("express");
 const http = require("http");
-const socketIo = require("socket.io");
+const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    withCredentials: false,
+    optionsSuccessStatus: 200,
+  },
+});
 
 // Serve static files
 app.use(express.static("public"));
@@ -81,7 +87,6 @@ io.on("connection", (socket) => {
 
   // Handle game moves
   socket.on("make_move", (index) => {
-    console.log("Move made by", socket.id, index);
     if (!players[socket.id]) {
       socket.emit("room_join_error", "You are not part of any room");
       return;

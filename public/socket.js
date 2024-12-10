@@ -1,4 +1,4 @@
-const socket = io("http://localhost:3000");
+const socket = io("https://local.amitparajuli.com.np");
 
 const create_button = document.getElementById("create_button");
 const create_div = document.getElementById("create");
