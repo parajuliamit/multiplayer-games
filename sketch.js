@@ -40,7 +40,10 @@ function reset() {
 }
 
 function mousePressed() {
-  if (gameFinished) return;
+  if (gameFinished) {
+    confirm(gameStatus + " Do you want to play again?") && reset();
+    return;
+  }
   const relativeX = mouseX - width / 2;
   const relativeY = mouseY - height / 2;
   let currentTile = 0;
@@ -126,7 +129,7 @@ function draw() {
         choices[condition[1]] === choices[condition[2]]
       ) {
         filled = false;
-        gameStatus = "WINNER " + choices[condition[0]];
+        gameStatus = choices[condition[0]] + " WINS !!";
         gameFinished = true;
       }
     }
@@ -137,7 +140,7 @@ function draw() {
   textSize(28);
   textAlign(CENTER, CENTER);
   if (filled) {
-    gameStatus = "DRAW";
+    gameStatus = "DRAW !!";
     gameFinished = true;
   }
   text(gameStatus, 0, height / 2 - 25);
