@@ -20,9 +20,9 @@ function exitGame() {
 create_button.addEventListener("click", () => {
   create_error.innerText = "";
   join_error.innerText = "";
-  const gameId = prompt("Enter Game Code (4 characters)");
+  const gameId = document.getElementById("create_room").value;
   if (gameId?.length !== 4) {
-    create_error.innerText = "Game Code must be of 4 characters";
+    create_error.innerText = "Room ID must be of 4 characters";
   } else {
     createRoom(gameId);
   }
@@ -31,9 +31,9 @@ create_button.addEventListener("click", () => {
 join_button.addEventListener("click", () => {
   create_error.innerText = "";
   join_error.innerText = "";
-  const gameId = prompt("Enter Game Code (4 characters)");
+  const gameId = document.getElementById("join_room").value;
   if (gameId?.length !== 4) {
-    join_error.innerText = "Game Code must be of 4 characters";
+    join_error.innerText = "Room ID must be of 4 characters";
   } else {
     joinRoom(gameId);
   }
@@ -108,9 +108,4 @@ socket.on("move_made", (result) => {
         : "Opponent Won :(";
   }
   updateMoveData(result.currentTurn === socket.id, result.moves, winner);
-});
-
-socket.on("game_message", (message) => {
-  console.log("Game message:", message);
-  alert(message);
 });

@@ -14,7 +14,8 @@
 
 <body>
   <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;  margin: 8px;" id="info">
-    <h1>Tic Tac Toe <br /> Multiplayer</h1>
+    <h1>TIC TAC TOE</h1>
+    <p style="margin: 0;">Welcome to Tic-Tac-Toe Multiplayer!</p>
     <div class="loader" id="connecting" style="display: none;"></div>
     <div id="waiting" style="align-items: center; justify-content: center; flex-direction: column; display: none;">
       <p style="margin: 0;">
@@ -26,9 +27,11 @@
       </p>
       <button style="background-color: brown;" onclick="exitGame()">Cancel</button>
     </div>
-    <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+    <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
+      <input id="create_room" type="text" placeholder="Enter unique room id" />
       <button id="create_button">Create Game</button>
       <p id="create_error" class="error" style="margin-top: 0; margin-bottom: 4px;"></p>
+      <input id="join_room" type="text" placeholder="Enter room id to join" />
       <button id="join_button">Join Game</button>
       <p id="join_error" class="error" style="margin: 0;"></p>
     </div>
