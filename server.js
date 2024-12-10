@@ -81,6 +81,7 @@ io.on("connection", (socket) => {
 
   // Handle game moves
   socket.on("make_move", (index) => {
+    console.log("Move made by", socket.id, index);
     if (!players[socket.id]) {
       socket.emit("room_join_error", "You are not part of any room");
       return;

@@ -110,6 +110,7 @@ socket.on("move_made", (result) => {
   updateMoveData(result.currentTurn === socket.id, result.moves, winner);
 });
 
-socket.on("game_result", (result) => {
-  console.log("Game result:", result);
+socket.on("game_message", (message) => {
+  console.log("Game message:", message);
+  alert(message);
 });

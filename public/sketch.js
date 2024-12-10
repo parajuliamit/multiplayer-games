@@ -2,26 +2,28 @@ let TILE_SIZE = 100;
 let gameStatus;
 let choices = [];
 let gameFinished;
+let myTurn = false;
 
 function setup() {
   const calculatedWidth = min(windowWidth, 400);
   createCanvas(calculatedWidth, 400);
   TILE_SIZE = calculatedWidth / 4;
   translate(width / 2, height / 2);
-  reset(true);
+  reset(false);
+  gameFinished = true;
   noLoop();
 }
 
-function reset(myTurn) {
+function reset(turn) {
   choices = [];
-  gameStatus = myTurn ? "Your Turn" : "Opponent's Turn";
+  gameStatus = turn ? "Your Turn" : "Opponent's Turn";
   gameFinished = false;
+  myTurn = turn;
   redraw();
 }
 
 function mousePressed() {
-  if (gameFinished) {
-    confirm(gameStatus + " Do you want to play again?") && reset();
+  if (gameFinished || !myTurn) {
     return;
   }
   const relativeX = mouseX - width / 2;
@@ -35,6 +37,7 @@ function mousePressed() {
         relativeY > -TILE_SIZE / 2 + j * TILE_SIZE &&
         relativeY < TILE_SIZE / 2 + j * TILE_SIZE
       ) {
+        console.log("Clicked on tile", currentTile);
         makeMove(currentTile);
         return;
       }
@@ -43,12 +46,13 @@ function mousePressed() {
   }
 }
 
-function updateMoveData(myTurn, moves, winner) {
+function updateMoveData(turn, moves, winner) {
+  myTurn = turn;
   if (winner) {
     gameStatus = winner;
     gameFinished = true;
   } else {
-    if (myTurn) {
+    if (turn) {
       gameStatus = "Your Turn";
     } else {
       gameStatus = "Opponent's Turn";
