@@ -16,9 +16,9 @@ const winningCondition = [
 let gameFinished;
 
 function setup() {
-  const size = min(windowWidth, windowHeight, 400);
-  createCanvas(size, max(size, 400));
-  TILE_SIZE = size / 4;
+  const calculatedWidth = min(windowWidth, 400);
+  createCanvas(calculatedWidth, 400);
+  TILE_SIZE = calculatedWidth / 4;
   textAlign(CENTER);
   translate(width / 2, height / 2);
   reset();
