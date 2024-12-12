@@ -49,6 +49,14 @@
   </div>
   <script src="sketch.js"></script>
   <script src="socket.js"></script>
+
+  <!-- adding div here for chat -->
+  <div id="chat" style="display: flex; flex-direction: column; gap: 4px; position: fixed; bottom: 0; right: 0; padding: 8px; background-color: #f0f0f0; border-radius: 8px;">
+    <h2 style="margin: 0;">Chat</h2>
+    <div id="messages" style="display: flex; flex-direction: column; gap: 4px;"></div>
+    <input id="message" type="text" placeholder="Type a message" />
+    <button id="send_message_button" onclick="send_message()">Send</button>
+  </div>
 </body>
 
 </html>

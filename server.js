@@ -19,6 +19,14 @@ const rooms = {};
 const players = {};
 
 io.on("connection", (socket) => {
+  // chat logics here:
+  socket.on('send_message', (data) => {
+    //Emit the message to the players in the room only
+    io.to(data.roomId).emit('receive_message', { sender: data.sender, message: data.message });
+  });
+  // -------------------------------------------Game Logic ----------------------------------------------
+
+
   // Create or join a game room
   socket.on("create_room", (roomId) => {
     if (roomId?.length !== 4) {
