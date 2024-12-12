@@ -20,11 +20,16 @@ const players = {};
 
 io.on("connection", (socket) => {
   // chat logics here:
-  socket.on("send_message", (data) => {
+  socket.on("send_message", ({ message }) => {
+    const roomId = players[socket.id];
+    if (!roomId) {
+      socket.emit("room_join_error", "You are not part of any room");
+      return;
+    }
     //Emit the message to the players in the room only
-    io.to(data.roomId).emit("receive_message", {
-      sender: data.sender,
-      message: data.message,
+    io.to(roomId).emit("receive_message", {
+      sender: socket.id,
+      message: message,
     });
   });
   // -------------------------------------------Game Logic ----------------------------------------------
@@ -112,7 +117,7 @@ io.on("connection", (socket) => {
       return;
     }
     room.moves[index] = room.currentTurn;
-    const winner = checkWhinner(room.moves);
+    const winner = checkWinner(room.moves);
     room.currentTurn = 1 - room.currentTurn;
     io.to(roomId).emit("move_made", {
       currentTurn: room.players[room.currentTurn],
@@ -190,7 +195,7 @@ const winningCondition = [
   [2, 4, 6],
 ];
 
-function checkWhinner(moves) {
+function checkWinner(moves) {
   if (moves.length > 3) {
     for (let condition of winningCondition) {
       if (
