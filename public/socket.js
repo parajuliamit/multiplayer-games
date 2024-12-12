@@ -1,4 +1,4 @@
-const socket = io("localhost:3000");
+const socket = io("https://baghchaal.com");
 
 const create_button = document.getElementById("create_button");
 const create_div = document.getElementById("create");
@@ -75,47 +75,48 @@ function makeMove(index) {
   socket.emit("make_move", index);
 }
 
-
 let isSender = true; // Boolean to check if the sender is the current user
 
 // Send message function
 function send_message() {
-  const message = document.getElementById('message').value;
-  
+  const message = document.getElementById("message").value;
+
   // Check if message is empty
   if (!message.trim()) return;
 
   const senderId = socket.id; // Use socket.id to identify the sender
   // set room id from here
-  roomId = document.getElementById('roomIdText').innerText;
+  roomId = document.getElementById("roomIdText").innerText;
 
   // Emit the message to the server with the sender's socket.id and message
-  socket.emit('send_message', { sender: senderId, message: message, roomId: roomId });
+  socket.emit("send_message", {
+    sender: senderId,
+    message: message,
+    roomId: roomId,
+  });
 
   // Clear the input field
-  document.getElementById('message').value = '';
+  document.getElementById("message").value = "";
 }
 // Listen for the 'receive_message' event from the server
 socket.on("receive_message", function (data) {
-  const messagesDiv = document.getElementById('messages');
-  const messageElement = document.createElement('div');
+  const messagesDiv = document.getElementById("messages");
+  const messageElement = document.createElement("div");
 
   // Check if the sender is the current user
   if (data.sender === socket.id) {
     // If the message is from the current user, show "You"
     messageElement.textContent = `You: ${data.message}`;
-    messageElement.style.alignSelf = 'flex-end'; // Align to the right
+    messageElement.style.alignSelf = "flex-end"; // Align to the right
   } else {
     // If the message is from another user, show their socket.id (or custom name)
     messageElement.textContent = `${data.sender}: ${data.message}`;
-    messageElement.style.alignSelf = 'flex-start'; // Align to the left
+    messageElement.style.alignSelf = "flex-start"; // Align to the left
   }
 
   // Append the message to the chat
   messagesDiv.appendChild(messageElement);
 });
-
-
 
 // Listen for game events
 socket.on("room_created", (roomId) => {
