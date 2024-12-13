@@ -1,4 +1,4 @@
-const socket = io("http://localhost:3000");
+const socket = io();
 // const socket = io("https://baghchaal.com");
 
 const create_button = document.getElementById("create_button");
@@ -11,8 +11,6 @@ const loading_div = document.getElementById("connecting");
 
 const chat_div = document.getElementById("chat_feature");
 const call_div = document.getElementById("call_feature");
-
-
 
 function exitGame() {
   if (!confirm("Are you sure you want to leave the game?")) {
@@ -97,7 +95,7 @@ function send_message() {
 
   const senderId = socket.id; // Use socket.id to identify the sender
   // set room id from here
-  roomId = document.getElementById('roomIdText').innerText;
+  roomId = document.getElementById("roomIdText").innerText;
 
   // Emit the message to the server with the sender's socket.id and message
   socket.emit("send_message", {
@@ -200,8 +198,8 @@ socket.on("move_made", (result) => {
       result.winner === "draw"
         ? "DRAW :/"
         : result.winner === socket.id
-          ? "You Won !!"
-          : "Opponent Won :(";
+        ? "You Won !!"
+        : "Opponent Won :(";
     play_again.style.display = "block";
   }
   updateMoveData(result.currentTurn === socket.id, result.moves, winner);
@@ -240,4 +238,3 @@ function reconnect() {
     }
   }, 2000);
 }
-

@@ -62,8 +62,8 @@
       <button id="joinCallButton" style="display: none;" onclick="joinCall()">Join Call</button>
       <button id="cancelCallButton" style="display: none;" onclick="endCall()">Cancel</button>
       <p id="callStatus"></p>
-      <video id="localVideo" autoplay muted></video>
-      <video id="remoteVideo" autoplay></video>
+      <video id="localVideo" autoplay muted playsinline></video>
+      <video id="remoteVideo" autoplay muted playsinline></video>
     </div>
   </div>
   <div style="align-items: center; flex-direction: column; gap: 8px; display: none;" id="game">
@@ -76,7 +76,7 @@
       <button id="play_again" onclick="playAgain()">Play Again</button>
     </div>
   </div>
-  
+
   <!-- adding div here for chat -->
   <div id="chat_feature" style="display: none; flex-direction: column; gap: 4px; position: fixed; bottom: 0; right: 0; padding: 8px; background-color: #f0f0f0; border-radius: 8px;">
     <h2 style="margin: 0;">Chat</h2>

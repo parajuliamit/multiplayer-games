@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  function getPeer(socket){
+  function getPeer(socket) {
     const roomId = players[socket.id];
     if (!roomId) {
       socket.emit("room_join_error", "You are not part of any room");
@@ -56,22 +56,20 @@ io.on("connection", (socket) => {
     }
   }
 
-  socket.on('offer', (data) => {
-    console.log('Offer received:', data);
-    socket.to(getPeer(socket)).emit('offer', data);
-});
+  socket.on("offer", (data) => {
+    console.log("Offer received:");
+    socket.to(getPeer(socket)).emit("offer", data);
+  });
 
-  socket.on('answer', (data) => {
-    console.log('Answer received:', data);
-    socket.to(getPeer(socket)).emit('answer', data);
-});
+  socket.on("answer", (data) => {
+    console.log("Answer received:");
+    socket.to(getPeer(socket)).emit("answer", data);
+  });
 
-  socket.on('ice-candidate', (data) => {
-    console.log('ICE Candidate:', data);
-    socket.to(getPeer(socket)).emit('ice-candidate', data);
-});
-
-
+  socket.on("ice-candidate", (data) => {
+    console.log("ICE Candidate:");
+    socket.to(getPeer(socket)).emit("ice-candidate", data);
+  });
 
   // -------------------------------------------Game Logic ----------------------------------------------
 
