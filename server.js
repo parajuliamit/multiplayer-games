@@ -32,6 +32,47 @@ io.on("connection", (socket) => {
       message: message,
     });
   });
+
+  function getPeer(socket){
+    const roomId = players[socket.id];
+    if (!roomId) {
+      socket.emit("room_join_error", "You are not part of any room");
+      return;
+    }
+    const room = rooms[roomId];
+    if (room.players.length < 2) {
+      socket.emit("game_message", "Opponent left the room");
+      return;
+    }
+
+    if (room.players[0] === socket.id) {
+      return room.players[1];
+      // socket.to(room.players[1]).emit("play_again_request");
+      // socket.emit("waiting_opponent", roomId);
+    } else {
+      return room.players[0];
+      // socket.to(room.players[0]).emit("play_again_request");
+      // socket.emit("waiting_opponent", roomId);
+    }
+  }
+
+  socket.on('offer', (data) => {
+    console.log('Offer received:', data);
+    socket.to(getPeer(socket)).emit('offer', data);
+});
+
+  socket.on('answer', (data) => {
+    console.log('Answer received:', data);
+    socket.to(getPeer(socket)).emit('answer', data);
+});
+
+  socket.on('ice-candidate', (data) => {
+    console.log('ICE Candidate:', data);
+    socket.to(getPeer(socket)).emit('ice-candidate', data);
+});
+
+
+
   // -------------------------------------------Game Logic ----------------------------------------------
 
   // Create or join a game room

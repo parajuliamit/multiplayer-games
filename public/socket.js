@@ -1,5 +1,5 @@
-// const socket = io("http://localhost:3000");
-const socket = io("https://baghchaal.com");
+const socket = io("http://localhost:3000");
+// const socket = io("https://baghchaal.com");
 
 const create_button = document.getElementById("create_button");
 const create_div = document.getElementById("create");
@@ -10,21 +10,9 @@ const join_error = document.getElementById("join_error");
 const loading_div = document.getElementById("connecting");
 
 const chat_div = document.getElementById("chat_feature");
-
-
-// add call feature div
 const call_div = document.getElementById("call_feature");
 
-let localStream;
-let peerConnection;
-let isAlreadyCalling = false;
-let currentRoomId = null;
 
-const configuration = {
-  iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' }
-  ]
-};
 
 function exitGame() {
   if (!confirm("Are you sure you want to leave the game?")) {
@@ -253,130 +241,3 @@ function reconnect() {
   }, 2000);
 }
 
-// Start Call
-
-
-function startCall() {
-  navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-    localStream = stream;
-    const localVideo = document.getElementById("localVideo");
-    if (localVideo) {
-      localVideo.srcObject = stream;
-    }
-    else {
-      console.log("Local video not found");
-    }
-
-    peerConnection = new RTCPeerConnection(configuration);
-    peerConnection.addStream(localStream);
-
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket.emit("candidate", {
-          roomId: currentRoomId,
-          candidate: event.candidate,
-        });
-      }
-    };
-
-    peerConnection.onaddstream = (event) => {
-      const remoteVideo = document.getElementById("remoteVideo");
-      remoteVideo.srcObject = event.stream;
-    };
-
-    peerConnection.createOffer().then((offer) => {
-      socket.emit("offer", {
-        roomId: currentRoomId,
-        offer: offer,
-        sender: socket.id
-      });
-      peerConnection.setLocalDescription(offer);
-
-      // update ui
-      document.getElementById('start_call_button').style.display = 'none';
-      document.getElementById('call_status').innerText = 'Started a call, waiting for others to join...';
-    }
-    );
-  });
-}
-
-function joinCall() {
-  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    .then(stream => {
-      localStream = stream;
-      const localVideo = document.getElementById('localVideo');
-      if (localVideo) {
-        localVideo.srcObject = stream;
-      } else {
-        console.log("Local video not found");
-      }
-
-      peerConnection = new RTCPeerConnection(config);
-      peerConnection.addStream(localStream);
-
-      peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-          socket.emit("candidate", {
-            roomId: currentRoomId,
-            candidate: event.candidate,
-          });
-        }
-      };
-
-      peerConnection.onaddstream = (event) => {
-        const remoteVideo = document.getElementById("remoteVideo");
-        remoteVideo.srcObject = event.stream;
-      };
-
-      // Update UI to indicate call joined
-      document.getElementById('call_status').innerText = 'In a call';
-      document.getElementById('join_call_button').style.display = 'none';
-      document.getElementById('cancel_call_button').style.display = 'block';
-    });
-}
-
-
-function endCall() {
-  if (peerConnection) {
-    peerConnection.close();
-    peerConnection = null;
-  }
-  const localVideo = document.getElementById('localVideo');
-  const remoteVideo = document.getElementById('remoteVideo');
-  localVideo.srcObject = null;
-  remoteVideo.srcObject = null;
-  socket.emit('end_call');
-    document.getElementById('start_call_button').style.display = 'block';
-    document.getElementById('join_call_button').style.display = 'none';
-    document.getElementById('cancel_call_button').style.display = 'none';
-    document.getElementById('call_status').innerText = '';
-  }
-
-  socket.on('offer', (data) => {
-    peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer))
-      .then(() => {
-        peerConnection.createAnswer()
-          .then((answer) => {
-            peerConnection.setLocalDescription(answer);
-            socket.emit("answer", {
-              roomId: currentRoomId,
-              answer: answer,
-            });
-          });
-      });
-    document.getElementById('call_status').innerText = `${data.sender} started a call. Join?`;
-    document.getElementById('join_call_button').style.display = 'block';
-    document.getElementById('cancel_call_button').style.display = 'block';
-  });
-
-socket.on('answer', (data) => {
-  peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
-});
-
-socket.on('candidate', (data) => {
-  peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-});
-
-document.getElementById('start_call_button').addEventListener('click', startCall);
-document.getElementById('join_call_button').addEventListener('click', joinCall);
-document.getElementById('cancel_call_button').addEventListener('click', endCall);

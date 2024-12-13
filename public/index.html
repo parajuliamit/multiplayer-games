@@ -58,10 +58,10 @@
     </div>
     <div id="call_feature" style="display: none;">
       <!-- sign for audio call and video call -->
-      <button id="start_call_button" onclick="startCall()">Start Call</button>
-      <button id="join_call_button" style="display: none;" onclick="joinCall()">Join Call</button>
-      <button id="cancel_call_button" style="display: none;" onclick="endCall()">Cancel</button>
-      <p id="call_status"></p>
+      <button id="startCallButton" onclick="startCall()">Start Call</button>
+      <button id="joinCallButton" style="display: none;" onclick="joinCall()">Join Call</button>
+      <button id="cancelCallButton" style="display: none;" onclick="endCall()">Cancel</button>
+      <p id="callStatus"></p>
       <video id="localVideo" autoplay muted></video>
       <video id="remoteVideo" autoplay></video>
     </div>
@@ -86,6 +86,7 @@
   </div>
   <script src="sketch.js"></script>
   <script src="socket.js"></script>
+  <script src="call.js"></script>
 </body>
 
 </html>
