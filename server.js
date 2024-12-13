@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
   function leaveRoom(playerId) {
     const playerRoom = players[playerId];
     if (playerRoom) {
-      io.to(roomId).emit("call-cancelled");
+      io.to(playerRoom).emit("call-cancelled");
       socket.leave(playerRoom);
       rooms[playerRoom].players.splice(
         rooms[playerRoom].players.indexOf(socket.id),
