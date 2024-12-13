@@ -1,7 +1,6 @@
 const socket = io();
 // const socket = io("https://baghchaal.com");
 
-const create_button = document.getElementById("create_button");
 const create_div = document.getElementById("create");
 const wait_div = document.getElementById("waiting");
 const create_error = document.getElementById("create_error");
@@ -10,7 +9,7 @@ const join_error = document.getElementById("join_error");
 const loading_div = document.getElementById("connecting");
 
 const chat_div = document.getElementById("chat_feature");
-const call_div = document.getElementById("call_feature");
+const messageInput = document.getElementById("messageInput");
 
 function exitGame() {
   if (!confirm("Are you sure you want to leave the game?")) {
@@ -39,7 +38,8 @@ function playAgain() {
   }
 }
 
-create_button.addEventListener("click", () => {
+function createGame(event) {
+  event?.preventDefault();
   create_error.innerText = "";
   join_error.innerText = "";
   const gameId = document.getElementById("create_room").value;
@@ -48,9 +48,10 @@ create_button.addEventListener("click", () => {
   } else {
     createRoom(gameId);
   }
-});
+}
 
-join_button.addEventListener("click", () => {
+function joinGame(event) {
+  event?.preventDefault();
   create_error.innerText = "";
   join_error.innerText = "";
   const gameId = document.getElementById("join_room").value;
@@ -59,7 +60,7 @@ join_button.addEventListener("click", () => {
   } else {
     joinRoom(gameId);
   }
-});
+}
 
 // Create a room
 function createRoom(roomId) {
@@ -86,16 +87,18 @@ function makeMove(index) {
 
 let isSender = true; // Boolean to check if the sender is the current user
 
+messageInput.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") {
+    sendMessage();
+  }
+});
+
 // Send message function
-function send_message() {
-  const message = document.getElementById("message").value;
+function sendMessage() {
+  const message = document.getElementById("messageInput").value;
 
   // Check if message is empty
   if (!message.trim()) return;
-
-  const senderId = socket.id; // Use socket.id to identify the sender
-  // set room id from here
-  roomId = document.getElementById("roomIdText").innerText;
 
   // Emit the message to the server with the sender's socket.id and message
   socket.emit("send_message", {
@@ -103,17 +106,20 @@ function send_message() {
   });
 
   // Clear the input field
-  document.getElementById("message").value = "";
+  document.getElementById("messageInput").value = "";
 }
 // Listen for the 'receive_message' event from the server
 socket.on("receive_message", function (data) {
   const messagesDiv = document.getElementById("messages");
   const messageElement = document.createElement("div");
-
+  const sender = document.createElement("span");
+  sender.style.fontSize = "0.8rem";
   // Check if the sender is the current user
   if (data.sender === socket.id) {
     // If the message is from the current user, show "You"
-    messageElement.textContent = `You: ${data.message}`;
+    sender.textContent = "You";
+    sender.style.textAlign = "right";
+    messageElement.textContent = data.message;
     messageElement.style.alignSelf = "flex-end"; // Align to the right
     messageElement.style.color = "white";
     messageElement.style.backgroundColor = "#007bff";
@@ -121,8 +127,10 @@ socket.on("receive_message", function (data) {
     messageElement.style.padding = "5px";
     messageElement.style.borderRadius = "5px";
   } else {
-    // If the message is from another user, show their socket.id (or custom name)
-    messageElement.textContent = `Opponent: ${data.message}`;
+    // If the message is from another user, show "Opponent"
+    sender.textContent = "Opponent";
+    sender.style.textAlign = "left";
+    messageElement.textContent = data.message;
     messageElement.style.alignSelf = "flex-start"; // Align to the left
     messageElement.style.color = "black";
     messageElement.style.backgroundColor = "#7777";
@@ -132,6 +140,7 @@ socket.on("receive_message", function (data) {
   }
 
   // Append the message to the chat
+  messagesDiv.appendChild(sender);
   messagesDiv.appendChild(messageElement);
 });
 
@@ -172,7 +181,6 @@ socket.on("room_join_error", (message) => {
 socket.on("player_joined", ({ roomId, currentTurn }) => {
   info.style.display = "none";
   game.style.display = "flex";
-  call_div.style.display = "flex";
   play_again.style.display = "none";
   reset(currentTurn === socket.id);
   chat_div.style.display = "flex";
@@ -186,7 +194,6 @@ socket.on("player_left", (roomId) => {
   wait_div.style.display = "flex";
   info.style.display = "flex";
   game.style.display = "none";
-  call_div.style.display = "none";
   document.getElementById("roomIdText").innerText = roomId;
 });
 
@@ -209,7 +216,6 @@ socket.on("disconnect", () => {
   console.log("Disconnected from server");
   loading_div.style.display = "none";
   wait_div.style.display = "none";
-  call_div.style.display = "none";
   chat_div.style.display = "none";
   info.style.display = "flex";
   game.style.display = "none";

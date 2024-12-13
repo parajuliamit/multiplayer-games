@@ -47,12 +47,8 @@ io.on("connection", (socket) => {
 
     if (room.players[0] === socket.id) {
       return room.players[1];
-      // socket.to(room.players[1]).emit("play_again_request");
-      // socket.emit("waiting_opponent", roomId);
     } else {
       return room.players[0];
-      // socket.to(room.players[0]).emit("play_again_request");
-      // socket.emit("waiting_opponent", roomId);
     }
   }
 
@@ -69,6 +65,13 @@ io.on("connection", (socket) => {
   socket.on("ice-candidate", (data) => {
     console.log("ICE Candidate:");
     socket.to(getPeer(socket)).emit("ice-candidate", data);
+  });
+
+  socket.on("cancel-call", () => {
+    const roomId = players[socket.id];
+    if (roomId) {
+      io.to(roomId).emit("call-cancelled");
+    }
   });
 
   // -------------------------------------------Game Logic ----------------------------------------------
@@ -97,6 +100,7 @@ io.on("connection", (socket) => {
   function leaveRoom(playerId) {
     const playerRoom = players[playerId];
     if (playerRoom) {
+      io.to(roomId).emit("call-cancelled");
       socket.leave(playerRoom);
       rooms[playerRoom].players.splice(
         rooms[playerRoom].players.indexOf(socket.id),
