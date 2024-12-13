@@ -14,27 +14,38 @@
 </head>
 
 <body>
-  <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;  margin: 8px;" id="info">
-    <h1 style="margin-bottom: 4px;">TIC TAC TOE</h1>
-    <p style="margin: 0; margin-bottom: 8px; color: #555;">Welcome to Tic-Tac-Toe Multiplayer!</p>
-    <div class="loader" id="connecting" style="display: none;"></div>
-    <div id="waiting" style="align-items: center; justify-content: center; flex-direction: column; display: none;">
-      <p style="margin: 0; color:blueviolet;">
-        Waiting for another player to join...
-      </p>
-      <p id="roomId" style="font-weight: bold; text-align: center; font-size: large; background-color: blueviolet; border-radius: 8px; padding: 4px 12px; color: white;">
-        <span style="font-weight: 300; font-size: small;">ROOM ID</span><br />
-        <span id="roomIdText"></span>
-      </p>
-      <button style="background-color: brown;" onclick="exitGame()">Cancel</button>
+  <div>
+    <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;  margin: 8px;" id="info">
+      <h1 style="margin-bottom: 4px;">TIC TAC TOE</h1>
+      <p style="margin: 0; margin-bottom: 8px; color: #555;">Welcome to Tic-Tac-Toe Multiplayer!</p>
+      <div class="loader" id="connecting" style="display: none;"></div>
+      <div id="waiting" style="align-items: center; justify-content: center; flex-direction: column; display: none;">
+        <p style="margin: 0; color:blueviolet;">
+          Waiting for another player to join...
+        </p>
+        <p id="roomId" style="font-weight: bold; text-align: center; font-size: large; background-color: blueviolet; border-radius: 8px; padding: 4px 12px; color: white;">
+          <span style="font-weight: 300; font-size: small;">ROOM ID</span><br />
+          <span id="roomIdText"></span>
+        </p>
+        <button style="background-color: brown;" onclick="exitGame()">Cancel</button>
+      </div>
+      <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
+        <input id="create_room" type="text" placeholder="Enter unique room id" />
+        <button id="create_button">Create Game</button>
+        <p id="create_error" class="error" style="margin-top: 0; margin-bottom: 4px;"></p>
+        <input id="join_room" type="text" placeholder="Enter room id to join" />
+        <button id="join_button">Join Game</button>
+        <p id="join_error" class="error" style="margin: 0;"></p>
+      </div>
     </div>
-    <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
-      <input id="create_room" type="text" placeholder="Enter unique room id" />
-      <button id="create_button">Create Game</button>
-      <p id="create_error" class="error" style="margin-top: 0; margin-bottom: 4px;"></p>
-      <input id="join_room" type="text" placeholder="Enter room id to join" />
-      <button id="join_button">Join Game</button>
-      <p id="join_error" class="error" style="margin: 0;"></p>
+    <div id="call_feature" style="display: none;">
+      <!-- sign for audio call and video call -->
+      <button id="start_call_button" onclick="startCall()">Start Call</button>
+      <button id="join_call_button" style="display: none;" onclick="joinCall()">Join Call</button>
+      <button id="cancel_call_button" style="display: none;" onclick="endCall()">Cancel</button>
+      <p id="call_status"></p>
+      <video id="localVideo" autoplay muted></video>
+      <video id="remoteVideo" autoplay></video>
     </div>
   </div>
   <div style="align-items: center; flex-direction: column; gap: 8px; display: none;" id="game">
@@ -47,16 +58,16 @@
       <button id="play_again" onclick="playAgain()">Play Again</button>
     </div>
   </div>
-  <script src="sketch.js"></script>
-  <script src="socket.js"></script>
-
+  
   <!-- adding div here for chat -->
-  <div id="chat" style="display: flex; flex-direction: column; gap: 4px; position: fixed; bottom: 0; right: 0; padding: 8px; background-color: #f0f0f0; border-radius: 8px;">
+  <div id="chat_feature" style="display: none; flex-direction: column; gap: 4px; position: fixed; bottom: 0; right: 0; padding: 8px; background-color: #f0f0f0; border-radius: 8px;">
     <h2 style="margin: 0;">Chat</h2>
     <div id="messages" style="display: flex; flex-direction: column; gap: 4px;"></div>
     <input id="message" type="text" placeholder="Type a message" />
     <button id="send_message_button" onclick="send_message()">Send</button>
   </div>
+  <script src="sketch.js"></script>
+  <script src="socket.js"></script>
 </body>
 
 </html>

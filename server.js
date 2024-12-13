@@ -21,8 +21,26 @@ const players = {};
 io.on("connection", (socket) => {
   // chat logics here:
   socket.on('send_message', (data) => {
+    // data.sender is the socket id, getting the roomId from the socket id
+    const roomId = players[data.sender];
     //Emit the message to the players in the room only
-    io.to(data.roomId).emit('receive_message', { sender: data.sender, message: data.message });
+    io.to(roomId).emit('receive_message', { sender: data.sender, message: data.message });
+  });
+
+
+  // call logics
+  // handle webrtc signaling
+  socket.on("offer", (data) => {
+    // send the offer to the other peer
+    io.to(data.roomId).emit("offer", data);
+  });
+
+  socket.on("answer", (data) => {
+    io.to(data.roomId).emit("answer", data);
+  });
+
+  socket.on("candidate", (data) => {
+    io.to(data.roomId).emit("candidate", data);
   });
   // -------------------------------------------Game Logic ----------------------------------------------
 
