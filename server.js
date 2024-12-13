@@ -13,37 +13,26 @@ const io = new Server(server, {
 });
 
 // Serve static files
-app.use(express.static("public"));
+app.use(express.static(__dirname + "/public"));
 
 const rooms = {};
 const players = {};
 
 io.on("connection", (socket) => {
   // chat logics here:
-  socket.on('send_message', (data) => {
-    // data.sender is the socket id, getting the roomId from the socket id
-    const roomId = players[data.sender];
+  socket.on("send_message", ({ message }) => {
+    const roomId = players[socket.id];
+    if (!roomId) {
+      socket.emit("room_join_error", "You are not part of any room");
+      return;
+    }
     //Emit the message to the players in the room only
-    io.to(roomId).emit('receive_message', { sender: data.sender, message: data.message });
-  });
-
-
-  // call logics
-  // handle webrtc signaling
-  socket.on("offer", (data) => {
-    // send the offer to the other peer
-    io.to(data.roomId).emit("offer", data);
-  });
-
-  socket.on("answer", (data) => {
-    io.to(data.roomId).emit("answer", data);
-  });
-
-  socket.on("candidate", (data) => {
-    io.to(data.roomId).emit("candidate", data);
+    io.to(roomId).emit("receive_message", {
+      sender: socket.id,
+      message: message,
+    });
   });
   // -------------------------------------------Game Logic ----------------------------------------------
-
 
   // Create or join a game room
   socket.on("create_room", (roomId) => {
@@ -128,7 +117,7 @@ io.on("connection", (socket) => {
       return;
     }
     room.moves[index] = room.currentTurn;
-    const winner = checkWhinner(room.moves);
+    const winner = checkWinner(room.moves);
     room.currentTurn = 1 - room.currentTurn;
     io.to(roomId).emit("move_made", {
       currentTurn: room.players[room.currentTurn],
@@ -206,7 +195,7 @@ const winningCondition = [
   [2, 4, 6],
 ];
 
-function checkWhinner(moves) {
+function checkWinner(moves) {
   if (moves.length > 3) {
     for (let condition of winningCondition) {
       if (

@@ -1,4 +1,5 @@
-const socket = io("localhost:3000");
+// const socket = io("http://localhost:3000");
+const socket = io("https://baghchaal.com");
 
 const create_button = document.getElementById("create_button");
 const create_div = document.getElementById("create");
@@ -76,17 +77,20 @@ join_button.addEventListener("click", () => {
 
 // Create a room
 function createRoom(roomId) {
-  socket.emit("create_room", roomId);
-  loading_div.style.display = "flex";
-  create_div.style.display = "none";
+  if (socket.connected) {
+    socket.emit("create_room", roomId);
+    loading_div.style.display = "flex";
+    create_div.style.display = "none";
+  }
 }
 
 // Join a room
 function joinRoom(roomId) {
-  socket.emit("join_room", roomId);
-  create_div.style.display = "none";
-  loading_div.style.display = "flex";
-  call_div.style.display = "flex";
+  if (socket.connected) {
+    socket.emit("join_room", roomId);
+    create_div.style.display = "none";
+    loading_div.style.display = "flex";
+  }
 }
 
 // Make a move
@@ -98,40 +102,52 @@ let isSender = true; // Boolean to check if the sender is the current user
 
 // Send message function
 function send_message() {
-  const message = document.getElementById('message').value;
+  const message = document.getElementById("message").value;
 
   // Check if message is empty
   if (!message.trim()) return;
 
-  const senderId = socket.id;
+  const senderId = socket.id; // Use socket.id to identify the sender
+  // set room id from here
+  roomId = document.getElementById('roomIdText').innerText;
 
   // Emit the message to the server with the sender's socket.id and message
-  socket.emit('send_message', { sender: senderId, message: message });
+  socket.emit("send_message", {
+    message: message,
+  });
 
   // Clear the input field
-  document.getElementById('message').value = '';
+  document.getElementById("message").value = "";
 }
 // Listen for the 'receive_message' event from the server
 socket.on("receive_message", function (data) {
-  const messagesDiv = document.getElementById('messages');
-  const messageElement = document.createElement('div');
+  const messagesDiv = document.getElementById("messages");
+  const messageElement = document.createElement("div");
 
   // Check if the sender is the current user
   if (data.sender === socket.id) {
     // If the message is from the current user, show "You"
     messageElement.textContent = `You: ${data.message}`;
-    messageElement.style.alignSelf = 'flex-end'; // Align to the right
+    messageElement.style.alignSelf = "flex-end"; // Align to the right
+    messageElement.style.color = "white";
+    messageElement.style.backgroundColor = "#007bff";
+    messageElement.style.marginBottom = "5px";
+    messageElement.style.padding = "5px";
+    messageElement.style.borderRadius = "5px";
   } else {
     // If the message is from another user, show their socket.id (or custom name)
-    messageElement.textContent = `${data.sender}: ${data.message}`;
-    messageElement.style.alignSelf = 'flex-start'; // Align to the left
+    messageElement.textContent = `Opponent: ${data.message}`;
+    messageElement.style.alignSelf = "flex-start"; // Align to the left
+    messageElement.style.color = "black";
+    messageElement.style.backgroundColor = "#7777";
+    messageElement.style.marginBottom = "5px";
+    messageElement.style.padding = "5px";
+    messageElement.style.borderRadius = "5px";
   }
 
   // Append the message to the chat
   messagesDiv.appendChild(messageElement);
 });
-
-
 
 // Listen for game events
 socket.on("room_created", (roomId) => {
@@ -214,9 +230,28 @@ socket.on("disconnect", () => {
   play_again_message.style.display = "none";
   create_div.style.display = "flex";
   join_error.innerText = "Disconnected from server";
-  socket.connect();
+  reconnect();
 });
 
+socket.on("connect", () => {
+  console.log("Connected to server");
+  join_error.innerText = "";
+  loading_div.style.display = "none";
+  create_div.style.display = "flex";
+});
+
+function reconnect() {
+  setTimeout(() => {
+    if (!socket.connected) {
+      console.log("Reconnecting to server...");
+      socket.connect();
+      join_error.innerText = "Reconnecting to server...";
+      if (!socket.connected) {
+        reconnect();
+      }
+    }
+  }, 2000);
+}
 
 // Start Call
 
