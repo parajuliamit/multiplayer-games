@@ -32,6 +32,48 @@ io.on("connection", (socket) => {
       message: message,
     });
   });
+
+  function getPeer(socket) {
+    const roomId = players[socket.id];
+    if (!roomId) {
+      socket.emit("room_join_error", "You are not part of any room");
+      return;
+    }
+    const room = rooms[roomId];
+    if (room.players.length < 2) {
+      socket.emit("game_message", "Opponent left the room");
+      return;
+    }
+
+    if (room.players[0] === socket.id) {
+      return room.players[1];
+    } else {
+      return room.players[0];
+    }
+  }
+
+  socket.on("offer", (data) => {
+    console.log("Offer received:");
+    socket.to(getPeer(socket)).emit("offer", data);
+  });
+
+  socket.on("answer", (data) => {
+    console.log("Answer received:");
+    socket.to(getPeer(socket)).emit("answer", data);
+  });
+
+  socket.on("ice-candidate", (data) => {
+    console.log("ICE Candidate:");
+    socket.to(getPeer(socket)).emit("ice-candidate", data);
+  });
+
+  socket.on("cancel-call", () => {
+    const roomId = players[socket.id];
+    if (roomId) {
+      io.to(roomId).emit("call-cancelled");
+    }
+  });
+
   // -------------------------------------------Game Logic ----------------------------------------------
 
   // Create or join a game room
@@ -58,6 +100,7 @@ io.on("connection", (socket) => {
   function leaveRoom(playerId) {
     const playerRoom = players[playerId];
     if (playerRoom) {
+      io.to(roomId).emit("call-cancelled");
       socket.leave(playerRoom);
       rooms[playerRoom].players.splice(
         rooms[playerRoom].players.indexOf(socket.id),
