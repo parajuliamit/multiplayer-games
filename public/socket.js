@@ -12,6 +12,9 @@ const info_div = document.getElementById("container");
 const game_chat_div = document.getElementById("game_chat");
 const messageInput = document.getElementById("messageInput");
 
+const win = document.getElementById("win");
+const loss = document.getElementById("loss");
+
 function exitGame() {
   if (!confirm("Are you sure you want to leave the game?")) {
     return;
@@ -68,6 +71,8 @@ function createRoom(roomId) {
     socket.emit("create_room", roomId);
     loading_div.style.display = "flex";
     create_div.style.display = "none";
+    win.innerText = 0;
+    loss.innerText = 0;
   }
 }
 
@@ -77,6 +82,8 @@ function joinRoom(roomId) {
     socket.emit("join_room", roomId);
     create_div.style.display = "none";
     loading_div.style.display = "flex";
+    win.innerText = 0;
+    loss.innerText = 0;
   }
 }
 
@@ -192,12 +199,15 @@ socket.on("move_made", (result) => {
   console.log("Move: ", result);
   let winner = null;
   if (result.winner) {
-    winner =
-      result.winner === "draw"
-        ? "DRAW :/"
-        : result.winner === socket.id
-        ? "You Won !!"
-        : "Opponent Won :(";
+    if (result.winner === "draw") {
+      winner = "DRAW :/";
+    } else if (result.winner === socket.id) {
+      winner = "You Won :)";
+      win.innerText = parseInt(win.innerText) + 1;
+    } else {
+      winner = "Opponent Won :(";
+      loss.innerText = parseInt(loss.innerText) + 1;
+    }
     play_again.style.display = "block";
   }
   updateMoveData(

@@ -79,10 +79,13 @@
       </p>
       <main></main>
       <p id="game_message"></p>
+      <h2>
+        <span style="color: green;">WIN</span> <span style="color: red;">LOSS</span> : <span id="win" style="color: green;">0</span> | <span id="loss" style="color: red;">0</span>
+      </h2>
       <p style="display: none; margin: 0; font-size: large;" id="play_again_message">
         Opponent requested to play again. Do you want to play again?
       </p>
-      <div style="display: flex; width: 100%; gap: 4px; align-items: center; justify-content: center;">
+      <div style="display: flex; width: 100%; gap: 4px; align-items: center; justify-content: center; margin: 0 16px;">
         <button onclick="exitGame()" style="background-color: brown;">Leave Game</button>
         <button id="play_again" onclick="playAgain()">Play Again</button>
       </div>
