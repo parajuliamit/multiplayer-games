@@ -75,11 +75,21 @@ function joinGame(event) {
   }
 }
 
+function joinRandomGame() {
+  if (socket.connected) {
+    socket.emit("random_match");
+    loading_div.style.display = "block";
+    create_div.style.display = "none";
+    win.innerText = 0;
+    loss.innerText = 0;
+  }
+}
+
 // Create a room
 function createRoom(roomId) {
   if (socket.connected) {
     socket.emit("create_room", roomId);
-    loading_div.style.display = "flex";
+    loading_div.style.display = "block";
     create_div.style.display = "none";
     win.innerText = 0;
     loss.innerText = 0;
@@ -91,7 +101,7 @@ function joinRoom(roomId) {
   if (socket.connected) {
     socket.emit("join_room", roomId);
     create_div.style.display = "none";
-    loading_div.style.display = "flex";
+    loading_div.style.display = "block";
     win.innerText = 0;
     loss.innerText = 0;
   }
@@ -180,10 +190,14 @@ socket.on("room_created", (roomId) => {
   document.getElementById("roomIdText").innerText = roomId;
 });
 
-socket.on("waiting_opponent", (roomId) => {
+socket.on("room_created", (roomId) => {
   loading_div.style.display = "none";
   wait_div.style.display = "flex";
   document.getElementById("roomIdText").innerText = roomId;
+});
+
+socket.on("waiting_match", (roomId) => {
+  loading_div.style.display = "block";
 });
 
 socket.on("play_again_request", () => {

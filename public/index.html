@@ -36,9 +36,12 @@
   <div style="display: flex; justify-content: center;" id="container">
     <div id="info">
       <h1 style="margin: 0;">♾️ TIC TAC TOE ♾️</h1>
-      <p style="margin: 4px;">Welcome to Infinite Tic-Tac-Toe Multiplayer!</p>
+      <p style="margin: 8px;">Welcome to Infinite Tic-Tac-Toe Multiplayer!</p>
       <!-- Loader Div -->
-      <div class="loader" id="connecting" style="display: none;"></div>
+      <div id="connecting" style="display: none;">
+        <div class="loader"></div>
+        <button style="background-color: brown;" onclick="exitGame()">Cancel</button>
+      </div>
       <!-- Loader Div End -->
       <!-- Waiting for other after room creation -->
       <div id="waiting" style="align-items: center; justify-content: center; flex-direction: column; display: none;">
@@ -54,14 +57,16 @@
       <!-- Waiting for other after room creation end -->
       <!-- Create and Join Room Form -->
       <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
+        <button id="random_match" style="margin-top: 16px;" onclick="joinRandomGame()">Play with Anyone</button>
+        <p style="margin: 4px;">OR</p>
         <form id="create_form" onsubmit="createGame(event)">
           <input id="create_room" type="text" placeholder="ENTER ROOM ID (4 CHAR)" />
-          <button id="create_button" type="submit">Create Game</button>
+          <button id="create_button" type="submit">Create Private Game</button>
           <p id="create_error" class="error" style="margin-top: 0; margin-bottom: 4px;"></p>
         </form>
         <form id="join_form" onsubmit="joinGame(event)">
           <input id="join_room" type="text" placeholder="ENTER ROOM ID TO JOIN" />
-          <button id="join_button" type="submit">Join Game</button>
+          <button id="join_button" type="submit">Join Private Game</button>
         </form>
         <p id="join_error" class="error" style="margin: 0;"></p>
       </div>

@@ -18,6 +18,7 @@ app.use(express.static(__dirname + "/public"));
 const toDisconnect = [];
 const rooms = {};
 const players = {};
+const waitingPlayers = [];
 
 io.on("connection", (socket) => {
   if (toDisconnect.includes(socket.id)) {
@@ -53,7 +54,6 @@ io.on("connection", (socket) => {
       socket.emit("room_create_error", `Room with ID ${roomId} already exists`);
       return;
     }
-    // const roomId = Math.random().toString(36).substring(7);
     leaveRoom(socket.id);
     socket.join(roomId);
     rooms[roomId] = {
@@ -62,6 +62,40 @@ io.on("connection", (socket) => {
     };
     players[socket.id] = roomId;
     socket.emit("room_created", roomId);
+  });
+
+  // Join a random game room
+  socket.on("random_match", () => {
+    leaveRoom(socket.id);
+    if (waitingPlayers.length > 0) {
+      if (waitingPlayers.includes(socket)) {
+        return;
+      }
+      const match = waitingPlayers.shift();
+      const roomId = Math.random().toString(36).substring(2, 6);
+      socket.join(roomId);
+      match.join(roomId);
+
+      let turn = Math.random() < 0.5 ? 0 : 1;
+
+      rooms[roomId] = {
+        players: [socket.id, match.id],
+        moves: [],
+        history: [],
+        currentTurn: turn,
+        firstTurn: turn,
+      };
+      players[socket.id] = roomId;
+      players[match.id] = roomId;
+
+      io.to(roomId).emit("player_joined", {
+        roomId,
+        currentTurn: turn === 0 ? socket.id : match.id,
+      });
+    } else {
+      waitingPlayers.push(socket);
+      socket.emit("waiting_match");
+    }
   });
 
   function leaveRoom(playerId) {
@@ -82,30 +116,31 @@ io.on("connection", (socket) => {
   }
 
   socket.on("join_room", (roomId) => {
-    if (!rooms[roomId]) {
+    const room = rooms[roomId];
+    if (!room) {
       socket.emit("room_join_error", `Room with ID ${roomId} does not exist`);
       return;
     }
-    if (rooms[roomId].players.length >= 2) {
+    if (!room.players.includes(socket.id) && room.players.length >= 2) {
       socket.emit("room_join_error", `Room with ID ${roomId} is full`);
       return;
     }
     leaveRoom(socket.id);
     socket.join(roomId);
-    rooms[roomId].players.push(socket.id);
-    rooms[roomId].moves = [];
-    rooms[roomId].history = [];
+    room.players.push(socket.id);
+    room.moves = [];
+    room.history = [];
     let turn;
-    if (rooms[roomId].firstTurn === undefined) {
+    if (room.firstTurn === undefined) {
       turn = Math.random() < 0.5 ? 0 : 1;
     } else {
-      turn = 1 - rooms[roomId].firstTurn;
+      turn = 1 - room.firstTurn;
     }
-    rooms[roomId].currentTurn = turn;
-    rooms[roomId].firstTurn = turn;
+    room.currentTurn = turn;
+    room.firstTurn = turn;
     io.to(roomId).emit("player_joined", {
       roomId,
-      currentTurn: rooms[roomId].players[turn],
+      currentTurn: room.players[turn],
     });
     players[socket.id] = roomId;
   });
@@ -153,6 +188,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave_room", () => {
+    if (waitingPlayers.includes(socket)) {
+      waitingPlayers.splice(waitingPlayers.indexOf(socket), 1);
+    }
     leaveRoom(socket.id);
   });
 
@@ -170,10 +208,8 @@ io.on("connection", (socket) => {
 
     if (room.players[0] === socket.id) {
       socket.to(room.players[1]).emit("play_again_request");
-      socket.emit("waiting_opponent", roomId);
     } else {
       socket.to(room.players[0]).emit("play_again_request");
-      socket.emit("waiting_opponent", roomId);
     }
   });
 
@@ -200,6 +236,10 @@ io.on("connection", (socket) => {
 
   // Disconnect handling
   socket.on("disconnect", () => {
+    if (waitingPlayers.includes(socket)) {
+      waitingPlayers.splice(waitingPlayers.indexOf(socket), 1);
+      return;
+    }
     toDisconnect.push(socket.id);
     setTimeout(() => {
       if (toDisconnect.includes(socket.id)) {
