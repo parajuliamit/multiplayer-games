@@ -60,11 +60,6 @@
         <p id="join_error" class="error" style="margin: 0;"></p>
       </div>
     </div>
-    <div id="call_feature" style="display: none;">
-      <!-- sign for audio call and video call -->
-      <video id="localVideo" autoplay muted playsinline style="border: 4px solid blue; width: 50%;"></video>
-      <video id="remoteVideo" autoplay muted playsinline style="border: 4px solid red; width: 50%;"></video>
-    </div>
   </div>
   <div style="align-items: center; flex-direction: column; gap: 8px; display: none;" id="game">
     <main></main>
@@ -79,16 +74,8 @@
 
   <!-- adding div here for chat -->
   <div id="chat_feature" style="display: none; flex-direction: column; gap: 4px; position: fixed; bottom: 0; right: 0; padding: 8px; background-color: #f0f0f0; border-radius: 8px;">
-    <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center;">
-      <h2 style="margin: 8px 0;">Chat</h2>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span id="callInfo"></span>
-        <button id="startCallButton" class="send-button" onclick="startCall()">📞</button>
-        <button id="acceptCallButton" class="send-button" onclick="acceptCall()" style="display: none;">📞</button>
-        <button id="cancelCallButton" class="send-button" onclick="startCall()" style="color: brown; display: none;">🚫</button>
-      </div>
-    </div>
-    <div id="messages" style="display: flex; flex-direction: column; gap: 4px;"></div>
+    <h2 style="margin: 8px 0;">Chat</h2>
+    <div id="messages" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 200px;"></div>
     <div class="message-container">
       <input type="text" id="messageInput" class="message-input" placeholder="Type your message..." style="text-align: left;" />
       <button id="sendButton" class="send-button" onclick="sendMessage()">ᗒ</button>
@@ -96,7 +83,6 @@
   </div>
   <script src="sketch.js"></script>
   <script src="socket.js"></script>
-  <script src="call.js"></script>
 </body>
 
 </html>

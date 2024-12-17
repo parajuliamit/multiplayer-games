@@ -142,6 +142,7 @@ socket.on("receive_message", function (data) {
   // Append the message to the chat
   messagesDiv.appendChild(sender);
   messagesDiv.appendChild(messageElement);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
 });
 
 // Listen for game events
