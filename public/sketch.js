@@ -1,6 +1,7 @@
 let TILE_SIZE = 100;
 let gameStatus;
 let choices = [];
+let nextRemove;
 let gameFinished;
 let myTurn = false;
 
@@ -48,7 +49,7 @@ function mousePressed() {
   }
 }
 
-function updateMoveData(turn, moves, winner) {
+function updateMoveData(turn, moves, winner, next) {
   myTurn = turn;
   if (winner) {
     gameStatus = winner;
@@ -61,18 +62,19 @@ function updateMoveData(turn, moves, winner) {
     }
   }
   choices = moves;
+  nextRemove = next;
   redraw();
 }
 
 function draw() {
-  background(220);
+  background(0);
 
   translate(width / 2, height / 2);
-  stroke(0);
-  strokeWeight(2);
+  stroke(255);
+  strokeWeight(6);
   noFill();
 
-  for (let i = 0; i <= 3; i++) {
+  for (let i = 1; i < 3; i++) {
     line(
       i * TILE_SIZE - TILE_SIZE * 1.5,
       -TILE_SIZE * 1.5,
@@ -91,8 +93,18 @@ function draw() {
   for (let j = -1; j <= 1; j++) {
     for (let i = -1; i <= 1; i++) {
       if (choices[currentTile] === "O") {
+        if (currentTile === nextRemove) {
+          stroke(0, 0, 255, 100);
+        } else {
+          stroke(0, 0, 255, 255);
+        }
         circle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE / 2);
       } else if (choices[currentTile] === "X") {
+        if (currentTile === nextRemove) {
+          stroke(255, 0, 0, 100);
+        } else {
+          stroke(255, 0, 0, 255);
+        }
         line(
           i * TILE_SIZE - TILE_SIZE / 4,
           j * TILE_SIZE - TILE_SIZE / 4,
@@ -111,8 +123,9 @@ function draw() {
   }
 
   strokeWeight(0);
-  fill(0);
+  fill(255);
   textSize(28);
   textAlign(CENTER, CENTER);
   text(gameStatus, 0, height / 2 - 25);
+  text("Infinite TicTacToe", 0, -height / 2 + 25);
 }

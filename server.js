@@ -90,6 +90,7 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     rooms[roomId].players.push(socket.id);
     rooms[roomId].moves = [];
+    rooms[roomId].history = [];
     let turn;
     if (rooms[roomId].firstTurn === undefined) {
       turn = Math.random() < 0.5 ? 0 : 1;
@@ -121,8 +122,13 @@ io.on("connection", (socket) => {
       socket.emit("game_message", "Invalid move");
       return;
     }
+    room.history.push(index);
+    if (room.history.length === 7) {
+      const toRemove = room.history.shift();
+      room.moves[toRemove] = undefined;
+    }
     room.moves[index] = room.currentTurn;
-    const winner = checkWinner(room.moves);
+    const winner = checkWinner(room.moves, room.history);
     room.currentTurn = 1 - room.currentTurn;
     io.to(roomId).emit("move_made", {
       currentTurn: room.players[room.currentTurn],
@@ -135,6 +141,7 @@ io.on("connection", (socket) => {
           : winner === 1
           ? room.players[1]
           : winner,
+      nextRemove: room.history.length === 6 && room.history[0],
     });
   });
 
@@ -175,6 +182,7 @@ io.on("connection", (socket) => {
       return;
     }
     room.moves = [];
+    room.history = [];
     room.currentTurn = 1 - room.firstTurn;
     room.firstTurn = room.currentTurn;
     io.to(roomId).emit("player_joined", {
@@ -200,8 +208,11 @@ const winningCondition = [
   [2, 4, 6],
 ];
 
-function checkWinner(moves) {
-  if (moves.length > 3) {
+function checkWinner(moves, history) {
+  if (history.length === 9) {
+    return "draw";
+  }
+  if (history.length > 3) {
     for (let condition of winningCondition) {
       if (
         moves[condition[0]] !== undefined &&
@@ -211,15 +222,6 @@ function checkWinner(moves) {
         return moves[condition[0]];
       }
     }
-  }
-  let filled = 0;
-  for (let move of moves) {
-    if (move !== undefined) {
-      filled++;
-    }
-  }
-  if (filled === 9) {
-    return "draw";
   }
 }
 

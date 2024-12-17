@@ -210,7 +210,12 @@ socket.on("move_made", (result) => {
         : "Opponent Won :(";
     play_again.style.display = "block";
   }
-  updateMoveData(result.currentTurn === socket.id, result.moves, winner);
+  updateMoveData(
+    result.currentTurn === socket.id,
+    result.moves,
+    winner,
+    result.nextRemove
+  );
 });
 
 socket.on("disconnect", () => {
