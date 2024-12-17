@@ -15,6 +15,14 @@ const messageInput = document.getElementById("messageInput");
 const win = document.getElementById("win");
 const loss = document.getElementById("loss");
 
+const quick_message = document.querySelectorAll("#reaction p");
+
+for (let i = 0; i < quick_message.length; i++) {
+  quick_message[i].addEventListener("click", function () {
+    sendQuickMessage(quick_message[i].innerText);
+  });
+}
+
 let isPlayAgainRequested = false;
 let youRequestedPlayAgain = false;
 
@@ -112,6 +120,13 @@ function sendMessage() {
   addMessage(message.trim(), true);
   // Clear the input field
   document.getElementById("messageInput").value = "";
+}
+
+function sendQuickMessage(message) {
+  socket.emit("send_message", {
+    message,
+  });
+  addMessage(message, true);
 }
 
 // Listen for the 'receive_message' event from the server

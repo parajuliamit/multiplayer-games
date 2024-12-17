@@ -78,7 +78,7 @@
         Every three moves, the last move of the player is removed.<br />The game continues infinitely until a player wins.
       </p>
       <main></main>
-      <p id="game_message"></p>
+      <p id="game_message" style="margin-bottom: 0;"></p>
       <h2>
         <span style="color: green;">WIN</span> <span style="color: red;">LOSS</span> : <span id="win" style="color: green;">0</span> | <span id="loss" style="color: red;">0</span>
       </h2>
@@ -95,8 +95,16 @@
       <h2 style="margin: 0; padding: 6px 16px;">
         MESSAGE
       </h2>
-      <div style="flex: 1; height: 100%;  background-color: #000; overflow-y: auto; display: flex; align-items: flex-end; justify-content: stretch;" id="chat">
+      <div style="flex: 1; height: 100%; background-color: #000; overflow-y: auto; display: flex; align-items: flex-end; justify-content: stretch;" id="chat">
         <div id="messages"></div>
+      </div>
+      <div id="reaction">
+        <p>😂</p>
+        <p>😍</p>
+        <p>😡</p>
+        <p>😭</p>
+        <p>Well Played 👏</p>
+        <p>Good Game 👌</p>
       </div>
       <div class="message-container">
         <input type="text" id="messageInput" class="message-input" placeholder="Type your message..." style="flex: 8; text-align: left; font-size: medium; max-width: 100%;" />

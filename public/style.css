@@ -24,6 +24,7 @@ h1 {
 h2 {
   text-align: center;
   color: blanchedalmond;
+  font-size: 1.5em;
 }
 
 p {
@@ -193,7 +194,41 @@ button {
   border-radius: 8px 8px 8px 0;
 }
 
+#reaction {
+  display: flex;
+  gap: 4px;
+  padding: 4px 8px;
+  margin: 0;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#reaction p {
+  margin: 0;
+  background-color: cornflowerblue;
+  border-radius: 6px;
+  padding: 5px 8px;
+  color: white;
+  cursor: pointer;
+}
+
 @media (max-width: 720px) {
+  body {
+    font-size: 14px;
+  }
+
+  h2 span {
+    font-size: 1.2em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  h1 {
+    font-size: 1.6em;
+  }
+
   #chat_feature {
     padding: 8px !important;
     width: 100%;
