@@ -21,6 +21,11 @@ h1 {
   color: blanchedalmond;
 }
 
+h2 {
+  text-align: center;
+  color: blanchedalmond;
+}
+
 p {
   color: #aaa;
   text-align: center;
@@ -47,7 +52,6 @@ input[type="text"] {
   padding: 9px 15px;
   margin: 8px 0;
   display: inline-block;
-  border: 1px solid #ccc;
   border-radius: 8px;
   box-sizing: border-box;
   text-align: center;
@@ -55,14 +59,20 @@ input[type="text"] {
   max-width: 300px;
 }
 
+input {
+  border: 1px solid #777;
+  background-color: #111;
+  color: #fff;
+}
+
 input[type="text"]:focus {
   outline: none;
-  border: 1px solid #4caf50;
-  background-color: #dff4df;
+  border: 1px solid blueviolet;
+  background-color: #333;
 }
 
 button {
-  background-color: #4caf50;
+  background-color: blueviolet;
   border: none;
   color: white;
   padding: 10px 16px;
@@ -84,7 +94,7 @@ button {
 
 .loader {
   border: 16px solid #f3f3f3;
-  border-top: 16px solid #3498db;
+  border-top: 16px solid blueviolet;
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -171,7 +181,7 @@ button {
 
 .message.self {
   align-self: flex-end;
-  background-color: #007bff;
+  background-color: blueviolet;
   color: white;
   border-radius: 8px 8px 0 8px;
 }

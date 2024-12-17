@@ -130,7 +130,7 @@ function addMessage(message, self) {
     sender.style.textAlign = "right";
     messageElement.className = "message self";
   } else {
-    sender.textContent = "Other";
+    sender.textContent = "Opponent";
     sender.style.textAlign = "left";
     messageElement.className = "message other";
   }
