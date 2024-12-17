@@ -84,6 +84,7 @@ function updateMoveData(turn, moves, winner, next, lastMove, winCondition) {
 }
 
 function drawGrid() {
+  stroke(200);
   for (let i = 1; i < 3; i++) {
     line(
       i * TILE_SIZE - TILE_SIZE * 1.5,
@@ -103,7 +104,6 @@ function drawGrid() {
 function draw() {
   background(0);
   translate(width / 2, height / 2);
-  stroke(255);
   strokeWeight(6);
   noFill();
 
