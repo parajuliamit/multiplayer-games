@@ -119,7 +119,7 @@ function draw() {
           if (drawingStep <= TILE_SIZE / 8) {
             const x = i * TILE_SIZE - TILE_SIZE / 4;
             line(x, y, x + drawingStep * 4, y + drawingStep * 4);
-            drawingStep++;
+            drawingStep += 1.5;
           } else if (drawingStep <= TILE_SIZE / 4) {
             const x = i * TILE_SIZE + TILE_SIZE / 4;
             line(
@@ -134,7 +134,7 @@ function draw() {
               x - (drawingStep - TILE_SIZE / 8) * 4,
               y + (drawingStep - TILE_SIZE / 8) * 4
             );
-            drawingStep++;
+            drawingStep += 1.5;
           } else {
             noLoop();
             drawingStep = 0;
@@ -152,7 +152,7 @@ function draw() {
               -PI / 2,
               (PI * drawingStep) / 16 - PI / 2
             );
-            drawingStep++;
+            drawingStep += 1.5;
           } else {
             noLoop();
             circle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE / 2);

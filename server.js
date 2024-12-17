@@ -15,10 +15,14 @@ const io = new Server(server, {
 // Serve static files
 app.use(express.static(__dirname + "/public"));
 
+const toDisconnect = [];
 const rooms = {};
 const players = {};
 
 io.on("connection", (socket) => {
+  if (toDisconnect.includes(socket.id)) {
+    toDisconnect.splice(toDisconnect.indexOf(socket.id), 1);
+  }
   if (players.length > 100) {
     socket.emit("room_join_error", "Server is full");
     socket.disconnect();
@@ -196,7 +200,12 @@ io.on("connection", (socket) => {
 
   // Disconnect handling
   socket.on("disconnect", () => {
-    leaveRoom(socket.id);
+    toDisconnect.push(socket.id);
+    setTimeout(() => {
+      if (toDisconnect.includes(socket.id)) {
+        leaveRoom(socket.id);
+      }
+    }, 3000);
   });
 });
 

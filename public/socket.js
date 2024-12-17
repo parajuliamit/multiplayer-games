@@ -15,6 +15,9 @@ const messageInput = document.getElementById("messageInput");
 const win = document.getElementById("win");
 const loss = document.getElementById("loss");
 
+let isPlayAgainRequested = false;
+let youRequestedPlayAgain = false;
+
 function exitGame() {
   if (!confirm("Are you sure you want to leave the game?")) {
     return;
@@ -29,15 +32,15 @@ function exitGame() {
 }
 
 function playAgain() {
-  info_div.style.display = "flex";
-  loading_div.style.display = "flex";
-  if (play_again_message.style.display === "flex") {
+  if (isPlayAgainRequested) {
     play_again_message.style.display = "none";
     socket.emit("play_again_accept");
   } else {
+    youRequestedPlayAgain = true;
+    play_again_message.style.display = "flex";
+    play_again_message.innerText = "Waiting for opponent to accept...";
+    play_again.style.display = "none";
     socket.emit("play_again_request");
-    create_div.style.display = "none";
-    game_chat_div.style.display = "none";
   }
 }
 
@@ -157,7 +160,13 @@ socket.on("waiting_opponent", (roomId) => {
 });
 
 socket.on("play_again_request", () => {
-  play_again_message.style.display = "flex";
+  if (youRequestedPlayAgain) {
+    socket.emit("play_again_accept");
+  } else {
+    play_again_message.style.display = "flex";
+    play_again_message.innerText = "Opponent requested to play again.";
+    isPlayAgainRequested = true;
+  }
 });
 
 socket.on("room_create_error", (message) => {
@@ -176,6 +185,7 @@ socket.on("player_joined", ({ roomId, currentTurn }) => {
   info_div.style.display = "none";
   game_chat_div.style.display = "flex";
   play_again.style.display = "none";
+  play_again_message.style.display = "none";
   reset(currentTurn === socket.id);
   currentRoomId = roomId;
 });
