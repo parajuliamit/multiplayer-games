@@ -32,21 +32,27 @@
 </head>
 
 <body>
-  <div>
-    <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;  margin: 8px;" id="info">
-      <h1 style="margin-bottom: 4px;">INFINITE TIC TAC TOE</h1>
-      <p style="margin: 0; margin-bottom: 8px; color: #555;">Welcome to Infinite Tic-Tac-Toe Multiplayer!</p>
+  <!-- Info Div -->
+  <div style="display: flex; justify-content: center;" id="container">
+    <div id="info">
+      <h1 style="margin: 0;">♾️ TIC TAC TOE ♾️</h1>
+      <p style="margin: 4px;">Welcome to Infinite Tic-Tac-Toe Multiplayer!</p>
+      <!-- Loader Div -->
       <div class="loader" id="connecting" style="display: none;"></div>
+      <!-- Loader Div End -->
+      <!-- Waiting for other after room creation -->
       <div id="waiting" style="align-items: center; justify-content: center; flex-direction: column; display: none;">
-        <p style="margin: 0; color:blueviolet;">
+        <p style="color:blueviolet;">
           Waiting for another player to join...
         </p>
-        <p id="roomId" style="font-weight: bold; text-align: center; font-size: large; background-color: blueviolet; border-radius: 8px; padding: 4px 12px; color: white;">
-          <span style="font-weight: 300; font-size: small;">ROOM ID</span><br />
-          <span id="roomIdText"></span>
-        </p>
+        <div id="roomId" style="font-weight: bold; text-align: center; font-size: xx-large; background-color: blueviolet; border-radius: 8px; padding: 8px 24px; margin-bottom: 16px;">
+          <p style="font-weight: 300; font-size: small; margin: 0; color: white;">ROOM ID</p>
+          <p id="roomIdText" style="margin: 0; color: white;"></p>
+        </div>
         <button style="background-color: brown;" onclick="exitGame()">Cancel</button>
       </div>
+      <!-- Waiting for other after room creation end -->
+      <!-- Create and Join Room Form -->
       <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
         <form id="create_form" onsubmit="createGame(event)">
           <input id="create_room" type="text" placeholder="ENTER ROOM ID (4 CHAR)" />
@@ -59,28 +65,45 @@
         </form>
         <p id="join_error" class="error" style="margin: 0;"></p>
       </div>
+      <!-- Create and Join Room Form End -->
     </div>
   </div>
-  <div style="align-items: center; flex-direction: column; gap: 8px; display: none;" id="game">
-    <main></main>
-    <p style="display: none; margin: 0;" id="play_again_message">
-      Opponent requested to play again. Do you want to play again?
-    </p>
-    <div style="display: flex; width: 400px; gap: 4px; align-items: center; justify-content: center;">
-      <button onclick="exitGame()" style="background-color: brown;">Leave Game</button>
-      <button id="play_again" onclick="playAgain()">Play Again</button>
+  <!-- Info Div Ends -->
+  <!-- Game and Chat -->
+  <div id="game_chat" style="display: none;">
+    <!-- Game Div -->
+    <div id="game">
+      <h1 style="margin: 0;">♾️ TIC TAC TOE ♾️</h1>
+      <p style="margin-top: 0; text-align: center;">
+        Every three moves, the last move of the player is removed.<br />The game continues infinitely until a player wins.
+      </p>
+      <main></main>
+      <p id="game_message"></p>
+      <p style="display: none; margin: 0; font-size: large;" id="play_again_message">
+        Opponent requested to play again. Do you want to play again?
+      </p>
+      <div style="display: flex; width: 100%; gap: 4px; align-items: center; justify-content: center;">
+        <button onclick="exitGame()" style="background-color: brown;">Leave Game</button>
+        <button id="play_again" onclick="playAgain()">Play Again</button>
+      </div>
     </div>
-  </div>
-
-  <!-- adding div here for chat -->
-  <div id="chat_feature" style="display: none; flex-direction: column; gap: 4px; position: fixed; bottom: 0; right: 0; padding: 8px; background-color: #f0f0f0; border-radius: 8px;">
-    <h2 style="margin: 8px 0;">Chat</h2>
-    <div id="messages" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 200px;"></div>
-    <div class="message-container">
-      <input type="text" id="messageInput" class="message-input" placeholder="Type your message..." style="text-align: left;" />
-      <button id="sendButton" class="send-button" onclick="sendMessage()">ᗒ</button>
+    <!-- Game Div Ends -->
+    <!-- Chat Div -->
+    <div id="chat_feature">
+      <h2 style="margin: 0; padding: 6px 16px;">Chat</h2>
+      <div style="flex: 1; height: 100%;  background-color: #000; overflow-y: auto; display: flex; align-items: flex-end; justify-content: stretch;" id="chat">
+        <div id="messages"></div>
+      </div>
+      <div class="message-container">
+        <input type="text" id="messageInput" class="message-input" placeholder="Type your message..." style="flex: 8; text-align: left; font-size: medium; max-width: 100%;" />
+        <button id="sendButton" class="send-button" onclick="sendMessage()">
+          ᗒ
+        </button>
+      </div>
     </div>
+    <!-- Chat Div Ends -->
   </div>
+  <!-- Game and Chat End -->
   <script src="sketch.js"></script>
   <script src="socket.js"></script>
 </body>

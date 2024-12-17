@@ -4,11 +4,12 @@ let choices = [];
 let nextRemove;
 let gameFinished;
 let myTurn = false;
+const gameMessageDiv = document.getElementById("game_message");
 
 function setup() {
-  const calculatedWidth = min(windowWidth, 400);
-  createCanvas(calculatedWidth, 400);
-  TILE_SIZE = calculatedWidth / 4;
+  const calculatedWidth = min(windowWidth, 330);
+  createCanvas(calculatedWidth, 330);
+  TILE_SIZE = calculatedWidth / 3;
   translate(width / 2, height / 2);
   reset(false);
   gameFinished = true;
@@ -17,7 +18,7 @@ function setup() {
 
 function reset(turn) {
   choices = [];
-  gameStatus = turn ? "Your Turn" : "Opponent's Turn";
+  gameMessageDiv.innerText = turn ? "Your Turn" : "Opponent's Turn";
   gameFinished = false;
   myTurn = turn;
   redraw();
@@ -52,13 +53,13 @@ function mousePressed() {
 function updateMoveData(turn, moves, winner, next) {
   myTurn = turn;
   if (winner) {
-    gameStatus = winner;
+    gameMessageDiv.innerText = winner;
     gameFinished = true;
   } else {
     if (turn) {
-      gameStatus = "Your Turn";
+      gameMessageDiv.innerText = "Your Turn";
     } else {
-      gameStatus = "Opponent's Turn";
+      gameMessageDiv.innerText = "Opponent's Turn";
     }
   }
   choices = moves;
@@ -121,11 +122,4 @@ function draw() {
       currentTile++;
     }
   }
-
-  strokeWeight(0);
-  fill(255);
-  textSize(28);
-  textAlign(CENTER, CENTER);
-  text(gameStatus, 0, height / 2 - 25);
-  text("Infinite TicTacToe", 0, -height / 2 + 25);
 }
