@@ -207,7 +207,8 @@ socket.on("move_made", (result) => {
     result.moves,
     winner,
     result.nextRemove,
-    result.lastMove
+    result.lastMove,
+    result.winningCondition
   );
 });
 

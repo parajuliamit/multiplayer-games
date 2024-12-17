@@ -9,11 +9,12 @@ let drawingTile;
 let drawingStep = 0;
 let drawingSign;
 let mySign;
+let winningCondition;
 
 function setup() {
   const calculatedWidth = min(windowWidth, 330);
   createCanvas(calculatedWidth, 330);
-  TILE_SIZE = Math.ceil(calculatedWidth / 3);
+  TILE_SIZE = Math.ceil(calculatedWidth / 3) - 5;
   reset(false);
   gameFinished = true;
   noLoop();
@@ -21,6 +22,7 @@ function setup() {
 
 function reset(turn) {
   mySign = turn ? "X" : "O";
+  winningCondition = null;
   choices = [];
   gameMessageDiv.innerText = turn ? "Your Turn" : "Opponent's Turn";
   gameFinished = false;
@@ -57,11 +59,13 @@ function mousePressed() {
   }
 }
 
-function updateMoveData(turn, moves, winner, next, lastMove) {
+function updateMoveData(turn, moves, winner, next, lastMove, winCondition) {
   myTurn = turn;
   if (winner) {
     gameMessageDiv.innerText = winner;
     gameFinished = true;
+    winningCondition = winCondition;
+    redraw();
   } else {
     if (turn) {
       gameMessageDiv.innerText = "Your Turn";
@@ -104,7 +108,7 @@ function draw() {
   noFill();
 
   drawGrid();
-
+  let winLine = [];
   let currentTile = 0;
   for (let j = -1; j <= 1; j++) {
     for (let i = -1; i <= 1; i++) {
@@ -173,9 +177,17 @@ function draw() {
           drawX(i, j);
         }
       }
+      if (winningCondition && winningCondition[0] === currentTile) {
+        winLine.push(i * TILE_SIZE);
+        winLine.push(j * TILE_SIZE);
+      } else if (winningCondition && winningCondition[2] === currentTile) {
+        winLine.push(i * TILE_SIZE);
+        winLine.push(j * TILE_SIZE);
+      }
       currentTile++;
     }
   }
+  drawWinLine(winLine);
 }
 
 function drawX(i, j) {
@@ -191,4 +203,12 @@ function drawX(i, j) {
     i * TILE_SIZE - TILE_SIZE / 4,
     j * TILE_SIZE + TILE_SIZE / 4
   );
+}
+
+function drawWinLine(winLine) {
+  if (winLine.length === 0) {
+    return;
+  }
+  stroke(0, 255, 0, 150);
+  line(winLine[0], winLine[1], winLine[2], winLine[3]);
 }
