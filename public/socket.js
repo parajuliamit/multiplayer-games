@@ -145,33 +145,28 @@ function addMessage(message, self) {
 
 // Listen for game events
 socket.on("room_created", (roomId) => {
-  console.log("Room created with ID:", roomId);
   loading_div.style.display = "none";
   wait_div.style.display = "flex";
   document.getElementById("roomIdText").innerText = roomId;
 });
 
 socket.on("waiting_opponent", (roomId) => {
-  console.log("Waiting in room with ID:", roomId);
   loading_div.style.display = "none";
   wait_div.style.display = "flex";
   document.getElementById("roomIdText").innerText = roomId;
 });
 
 socket.on("play_again_request", () => {
-  console.log("Play again requested");
   play_again_message.style.display = "flex";
 });
 
 socket.on("room_create_error", (message) => {
-  console.log("Room create error:", message);
   loading_div.style.display = "none";
   create_error.innerText = message;
   create_div.style.display = "flex";
 });
 
 socket.on("room_join_error", (message) => {
-  console.log("Room join error:", message);
   loading_div.style.display = "none";
   join_error.innerText = message;
   create_div.style.display = "flex";
@@ -183,11 +178,9 @@ socket.on("player_joined", ({ roomId, currentTurn }) => {
   play_again.style.display = "none";
   reset(currentTurn === socket.id);
   currentRoomId = roomId;
-  console.log("Player joined room:", roomId);
 });
 
 socket.on("player_left", (roomId) => {
-  console.log("Player left room:", roomId);
   loading_div.style.display = "none";
   wait_div.style.display = "flex";
   info_div.style.display = "flex";
@@ -196,7 +189,6 @@ socket.on("player_left", (roomId) => {
 });
 
 socket.on("move_made", (result) => {
-  console.log("Move: ", result);
   let winner = null;
   if (result.winner) {
     if (result.winner === "draw") {
@@ -214,7 +206,8 @@ socket.on("move_made", (result) => {
     result.currentTurn === socket.id,
     result.moves,
     winner,
-    result.nextRemove
+    result.nextRemove,
+    result.lastMove
   );
 });
 

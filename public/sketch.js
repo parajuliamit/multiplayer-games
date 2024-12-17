@@ -5,18 +5,22 @@ let nextRemove;
 let gameFinished;
 let myTurn = false;
 const gameMessageDiv = document.getElementById("game_message");
+let drawingTile;
+let drawingStep = 0;
+let drawingSign;
+let mySign;
 
 function setup() {
   const calculatedWidth = min(windowWidth, 330);
   createCanvas(calculatedWidth, 330);
-  TILE_SIZE = calculatedWidth / 3;
-  translate(width / 2, height / 2);
+  TILE_SIZE = Math.ceil(calculatedWidth / 3);
   reset(false);
   gameFinished = true;
   noLoop();
 }
 
 function reset(turn) {
+  mySign = turn ? "X" : "O";
   choices = [];
   gameMessageDiv.innerText = turn ? "Your Turn" : "Opponent's Turn";
   gameFinished = false;
@@ -39,8 +43,11 @@ function mousePressed() {
         relativeY > -TILE_SIZE / 2 + i * TILE_SIZE &&
         relativeY < TILE_SIZE / 2 + i * TILE_SIZE
       ) {
-        console.log("Clicked on tile", currentTile);
         if (!choices[currentTile]) {
+          drawingSign = mySign;
+          drawingTile = currentTile;
+          drawingStep = 0;
+          loop();
           makeMove(currentTile);
         }
         return;
@@ -50,7 +57,7 @@ function mousePressed() {
   }
 }
 
-function updateMoveData(turn, moves, winner, next) {
+function updateMoveData(turn, moves, winner, next, lastMove) {
   myTurn = turn;
   if (winner) {
     gameMessageDiv.innerText = winner;
@@ -64,17 +71,15 @@ function updateMoveData(turn, moves, winner, next) {
   }
   choices = moves;
   nextRemove = next;
-  redraw();
+  if (myTurn) {
+    drawingSign = mySign === "X" ? "O" : "X";
+    drawingTile = lastMove;
+    drawingStep = 0;
+    loop();
+  }
 }
 
-function draw() {
-  background(0);
-
-  translate(width / 2, height / 2);
-  stroke(255);
-  strokeWeight(6);
-  noFill();
-
+function drawGrid() {
   for (let i = 1; i < 3; i++) {
     line(
       i * TILE_SIZE - TILE_SIZE * 1.5,
@@ -89,37 +94,101 @@ function draw() {
       i * TILE_SIZE - TILE_SIZE * 1.5
     );
   }
+}
+
+function draw() {
+  background(0);
+  translate(width / 2, height / 2);
+  stroke(255);
+  strokeWeight(6);
+  noFill();
+
+  drawGrid();
 
   let currentTile = 0;
   for (let j = -1; j <= 1; j++) {
     for (let i = -1; i <= 1; i++) {
-      if (choices[currentTile] === "O") {
-        if (currentTile === nextRemove) {
-          stroke(0, 0, 255, 100);
+      if (currentTile === drawingTile) {
+        if (drawingSign === "X") {
+          stroke(255, 0, 0, 255);
+          const y = j * TILE_SIZE - TILE_SIZE / 4;
+          if (drawingStep <= TILE_SIZE / 8) {
+            const x = i * TILE_SIZE - TILE_SIZE / 4;
+            line(x, y, x + drawingStep * 4, y + drawingStep * 4);
+            drawingStep++;
+          } else if (drawingStep <= TILE_SIZE / 4) {
+            const x = i * TILE_SIZE + TILE_SIZE / 4;
+            line(
+              i * TILE_SIZE - TILE_SIZE / 4,
+              j * TILE_SIZE - TILE_SIZE / 4,
+              i * TILE_SIZE + TILE_SIZE / 4,
+              j * TILE_SIZE + TILE_SIZE / 4
+            );
+            line(
+              x,
+              y,
+              x - (drawingStep - TILE_SIZE / 8) * 4,
+              y + (drawingStep - TILE_SIZE / 8) * 4
+            );
+            drawingStep++;
+          } else {
+            noLoop();
+            drawingStep = 0;
+            drawingTile = null;
+            drawX(i, j);
+          }
         } else {
           stroke(0, 0, 255, 255);
+          if (drawingStep <= TILE_SIZE / 4) {
+            arc(
+              i * TILE_SIZE,
+              j * TILE_SIZE,
+              TILE_SIZE / 2,
+              TILE_SIZE / 2,
+              -PI / 2,
+              (PI * drawingStep) / 16 - PI / 2
+            );
+            drawingStep++;
+          } else {
+            noLoop();
+            circle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE / 2);
+            drawingStep = 0;
+            drawingTile = null;
+          }
         }
-        circle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE / 2);
-      } else if (choices[currentTile] === "X") {
-        if (currentTile === nextRemove) {
-          stroke(255, 0, 0, 100);
-        } else {
-          stroke(255, 0, 0, 255);
+      } else {
+        if (choices[currentTile] === "O") {
+          if (currentTile === nextRemove) {
+            stroke(0, 0, 255, 100);
+          } else {
+            stroke(0, 0, 255, 255);
+          }
+          circle(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE / 2);
+        } else if (choices[currentTile] === "X") {
+          if (currentTile === nextRemove) {
+            stroke(255, 0, 0, 100);
+          } else {
+            stroke(255, 0, 0, 255);
+          }
+          drawX(i, j);
         }
-        line(
-          i * TILE_SIZE - TILE_SIZE / 4,
-          j * TILE_SIZE - TILE_SIZE / 4,
-          i * TILE_SIZE + TILE_SIZE / 4,
-          j * TILE_SIZE + TILE_SIZE / 4
-        );
-        line(
-          i * TILE_SIZE + TILE_SIZE / 4,
-          j * TILE_SIZE - TILE_SIZE / 4,
-          i * TILE_SIZE - TILE_SIZE / 4,
-          j * TILE_SIZE + TILE_SIZE / 4
-        );
       }
       currentTile++;
     }
   }
+}
+
+function drawX(i, j) {
+  line(
+    i * TILE_SIZE - TILE_SIZE / 4,
+    j * TILE_SIZE - TILE_SIZE / 4,
+    i * TILE_SIZE + TILE_SIZE / 4,
+    j * TILE_SIZE + TILE_SIZE / 4
+  );
+  line(
+    i * TILE_SIZE + TILE_SIZE / 4,
+    j * TILE_SIZE - TILE_SIZE / 4,
+    i * TILE_SIZE - TILE_SIZE / 4,
+    j * TILE_SIZE + TILE_SIZE / 4
+  );
 }

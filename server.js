@@ -132,6 +132,7 @@ io.on("connection", (socket) => {
     room.currentTurn = 1 - room.currentTurn;
     io.to(roomId).emit("move_made", {
       currentTurn: room.players[room.currentTurn],
+      lastMove: index,
       moves: room.moves.map((move) =>
         move === undefined ? undefined : move === room.firstTurn ? "X" : "O"
       ),
