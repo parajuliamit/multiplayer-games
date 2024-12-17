@@ -14,8 +14,7 @@ const messageInput = document.getElementById("messageInput");
 
 const win = document.getElementById("win");
 const loss = document.getElementById("loss");
-
-const quick_message = document.querySelectorAll("#reaction p");
+const quick_message = document.querySelectorAll(".reaction p");
 
 for (let i = 0; i < quick_message.length; i++) {
   quick_message[i].addEventListener("click", function () {
@@ -133,7 +132,20 @@ function sendQuickMessage(message) {
 socket.on("receive_message", function (data) {
   // Only add the message if it is from other user
   const self = data.sender === socket.id;
-  if (!self) addMessage(data.message, data.sender === socket.id);
+  if (!self) {
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = data.message;
+
+    // Append the bubble to the body
+    document.body.appendChild(bubble);
+
+    // Remove the bubble after 4 seconds
+    setTimeout(() => {
+      bubble.remove();
+    }, 4000);
+    addMessage(data.message, data.sender === socket.id);
+  }
 });
 
 function addMessage(message, self) {
