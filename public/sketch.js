@@ -31,11 +31,19 @@ function reset(turn) {
 }
 
 function mousePressed() {
+  clickTile(mouseX, mouseY);
+}
+
+function touchStarted() {
+  clickTile(touchX, touchY);
+}
+
+function clickTile(x, y) {
   if (gameFinished || !myTurn) {
     return;
   }
-  const relativeX = mouseX - width / 2;
-  const relativeY = mouseY - height / 2;
+  const relativeX = x - width / 2;
+  const relativeY = y - height / 2;
   let currentTile = 0;
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
