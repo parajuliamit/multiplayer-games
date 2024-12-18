@@ -35,7 +35,7 @@ function mousePressed() {
 }
 
 function touchStarted() {
-  clickTile(touchX, touchY);
+  clickTile(mouseX, mouseY);
 }
 
 function clickTile(x, y) {
