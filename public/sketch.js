@@ -92,6 +92,7 @@ function updateMoveData(turn, moves, winner, next, lastMove, winCondition) {
 }
 
 function drawGrid() {
+  drawingContext.shadowColor = "rgba(0, 255, 0, 0.8)";
   stroke(200);
   for (let i = 1; i < 3; i++) {
     line(
@@ -114,14 +115,17 @@ function draw() {
   translate(width / 2, height / 2);
   strokeWeight(6);
   noFill();
-
+  drawingContext.shadowBlur = 15;
   drawGrid();
+  drawingContext.shadowBlur = 20;
+
   let winLine = [];
   let currentTile = 0;
   for (let j = -1; j <= 1; j++) {
     for (let i = -1; i <= 1; i++) {
       if (currentTile === drawingTile) {
         if (drawingSign === "X") {
+          drawingContext.shadowColor = "rgba(255, 0, 0, 0.8)";
           stroke(255, 0, 0, 255);
           const y = j * TILE_SIZE - TILE_SIZE / 4;
           if (drawingStep <= TILE_SIZE / 8) {
@@ -151,6 +155,7 @@ function draw() {
           }
         } else {
           stroke(0, 0, 255, 255);
+          drawingContext.shadowColor = "rgba(0, 0, 255, 0.8)";
           if (drawingStep <= TILE_SIZE / 4) {
             arc(
               i * TILE_SIZE,
@@ -170,6 +175,7 @@ function draw() {
         }
       } else {
         if (choices[currentTile] === "O") {
+          drawingContext.shadowColor = "rgba(0, 0, 255, 0.8)";
           if (currentTile === nextRemove) {
             stroke(0, 0, 255, 100);
           } else {
@@ -199,6 +205,7 @@ function draw() {
 }
 
 function drawX(i, j) {
+  drawingContext.shadowColor = "rgba(255, 0, 0, 0.8)";
   line(
     i * TILE_SIZE - TILE_SIZE / 4,
     j * TILE_SIZE - TILE_SIZE / 4,
@@ -214,6 +221,7 @@ function drawX(i, j) {
 }
 
 function drawWinLine(winLine) {
+  drawingContext.shadowColor = "rgba(0, 255, 0, 0.8)";
   if (winLine.length === 0) {
     return;
   }
