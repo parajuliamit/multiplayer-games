@@ -153,7 +153,7 @@ socket.on("receive_message", function (data) {
     // Remove the bubble after 4 seconds
     setTimeout(() => {
       bubble.remove();
-    }, 4000);
+    }, 3000);
     addMessage(data.message, data.sender === socket.id);
   }
 });
