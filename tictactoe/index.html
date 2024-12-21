@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Infinite Tic-Tac-Toe | Play With Friends</title>
+  <meta name="description" content="Play Infinite Tic-Tac-Toe, the traditional board game but with twist, online. Enjoy this strategic game with friends.">
+  <meta name="keywords" content="TicTacToe, Tic Tac Toe, Infinite TicTacToe, Infinite Tic Tac Toe, online games, strategy games">
+  <meta name="author" content="Amit Parajuli">
+  <meta property="og:title" content="Infinite Tic-Tac-Toe - Play With Friends">
+  <meta property="og:description" content="Play Infinite Tic-Tac-Toe, the traditional board game but with twist, online. Enjoy this strategic game with friends.">
+  <meta property="og:image" content="https://baghchaal.com/images/tictactoe_og.jpg">
+  <meta property="og:url" content="https://baghchaal.com">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Infitite Tic-Tac-Toe">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+  <link rel="manifest" href="./favicon/site.webmanifest">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <meta charset="utf-8" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap');
+  </style>
+</head>
+
+<body>
+  <!-- Info Div -->
+  <div style="display: flex; justify-content: center;" id="container">
+    <div id="info">
+      <h1>♾️ TIC TAC TOE ♾️</h1>
+      <p style="margin: 8px;">Welcome to Infinite Tic-Tac-Toe Multiplayer!</p>
+      <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
+        <a href="/local" style="width: 100%; margin: 4px;">
+          <button id="random_match">Play Locally</button>
+        </a>
+        <p style="margin: 4px;">OR</p>
+        <a href="/play?type=random" style="width: 100%; margin: 4px;">
+          <button id="random_match">Play Online</button>
+        </a>
+        <p style="margin: 4px;">OR</p>
+        <a href="/play?type=create" style="width: 100%; margin: 4px;">
+          <button id="create_button" type="submit">Create Private Game</button>
+        </a>
+        <p style="margin: 4px;">OR</p>
+        <form id="join_form" onsubmit="joinGame(event)">
+          <input id="join_room" type="text" placeholder="ENTER ROOM ID TO JOIN" />
+          <button id="join_button" type="submit">Join Private Game</button>
+        </form>
+        <p id="join_error" class="error" style="margin: 0;"></p>
+      </div>
+    </div>
+  </div>
+  <!-- Info Div Ends -->
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const room = urlParams.get('room')?.trim();
+    if (room) {
+      document.getElementById('join_room').value = room;
+    }
+
+    const error = urlParams.get('error')?.trim();
+    if (error) {
+      document.getElementById('join_error').innerText = error;
+    }
+
+    const joinGame = (event) => {
+      event.preventDefault();
+      const roomId = document.getElementById('join_room').value.trim();
+      if (roomId?.length !== 4) {
+        document.getElementById('join_error').innerText = 'Room ID must be 4 characters long.';
+      } else {
+        window.location.href = `/play?room=${roomId}&type=join`;
+      }
+    }
+  </script>
+</body>
+
+</html>
