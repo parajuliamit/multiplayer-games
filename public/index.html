@@ -55,7 +55,11 @@
       <!-- Waiting for other after room creation end -->
       <!-- Create and Join Room Form -->
       <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
-        <button id="random_match" style="margin-top: 16px;" onclick="joinRandomGame()">Play with Anyone</button>
+        <a href="/local" style="width: 100%;">
+          <button id="random_match" style="margin: 8px;">Play Locally</button>
+        </a>
+        <p style="margin: 4px;">OR</p>
+        <button id="random_match" style="margin-top: 8px;" onclick="joinRandomGame()">Play with Anyone</button>
         <p style="margin: 4px;">OR</p>
         <form id="create_form" onsubmit="createGame(event)">
           <input id="create_room" type="text" placeholder="ENTER ROOM ID (4 CHAR)" />
