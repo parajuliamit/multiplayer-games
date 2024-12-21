@@ -28,7 +28,7 @@ const player2Name = document.getElementById("player2name");
 
 function exitGame() {
   if (confirm("Are you sure you want to leave the game?")) {
-    window.location.href = "/";
+    window.location.href = "/tictactoe/";
   }
 }
 

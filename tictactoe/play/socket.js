@@ -34,7 +34,7 @@ function exitGame() {
   if (!confirm("Are you sure you want to leave the game?")) {
     return;
   }
-  window.location.href = "/";
+  window.location.href = "/tictactoe/";
 }
 
 function startGame(room) {
@@ -78,7 +78,7 @@ function startGame(room) {
   });
 
   socket.on("room_join_error", (error) => {
-    window.location.href = `/?error=${error}`;
+    window.location.href = `/tictactoe?error=${error}`;
   });
 
   socket.on("player_left", (roomId) => {
@@ -130,7 +130,7 @@ function startGame(room) {
     showLoading("Reconnecting...");
     setTimeout(() => {
       if (socket.disconnected) {
-        window.location.href = "/?error=Trouble connecting to server";
+        window.location.href = "/tictactoe?error=Trouble connecting to server";
       }
     }, 5000);
   });

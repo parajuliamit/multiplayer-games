@@ -34,15 +34,15 @@
       <h1>♾️ TIC TAC TOE ♾️</h1>
       <p style="margin: 8px;">Welcome to Infinite Tic-Tac-Toe Multiplayer!</p>
       <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
-        <a href="/local" style="width: 100%; margin: 4px;">
+        <a href="/tictactoe/local/" style="width: 100%; margin: 4px;">
           <button id="random_match">Play Locally</button>
         </a>
         <p style="margin: 4px;">OR</p>
-        <a href="/play?type=random" style="width: 100%; margin: 4px;">
+        <a href="/tictactoe/play?type=random" style="width: 100%; margin: 4px;">
           <button id="random_match">Play Online</button>
         </a>
         <p style="margin: 4px;">OR</p>
-        <a href="/play?type=create" style="width: 100%; margin: 4px;">
+        <a href="/tictactoe/play?type=create" style="width: 100%; margin: 4px;">
           <button id="create_button" type="submit">Create Private Game</button>
         </a>
         <p style="margin: 4px;">OR</p>
@@ -74,7 +74,7 @@
       if (roomId?.length !== 4) {
         document.getElementById('join_error').innerText = 'Room ID must be 4 characters long.';
       } else {
-        window.location.href = `/play?room=${roomId}&type=join`;
+        window.location.href = `/tictactoe/play?room=${roomId}&type=join`;
       }
     }
   </script>

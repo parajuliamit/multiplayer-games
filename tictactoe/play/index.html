@@ -124,12 +124,12 @@
       if (room?.length === 4) {
         startGame(room);
       } else {
-        window.location.href = '/?error=Room ID must be 4 characters long.';
+        window.location.href = '/tictactoe/?error=Room ID must be 4 characters long.';
       }
     } else if (type === 'random') {
       startGame('random');
     } else {
-      window.location.href = '/';
+      window.location.href = '/tictactoe/';
     }
   </script>
   <script src="sketch.js"></script>
