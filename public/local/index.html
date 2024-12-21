@@ -2,16 +2,16 @@
 <html lang="en">
 
 <head>
-  <title>BaghChaal Game - Play With Friends</title>
-  <meta name="description" content="Play BaghChaal, the traditional Nepali board game, online. Enjoy this strategic game of tigers and goats with friends or against the computer.">
-  <meta name="keywords" content="BaghChaal, BaghChal, BaagChal, Bagchal, Baagchaal, Bagh Chal, Nepali board game, tigers and goats, online games, strategy games">
+  <title>Infinite Tic-Tac-Toe - Play With Friends</title>
+  <meta name="description" content="Play Infinite Tic-Tac-Toe, the traditional board game but with twist, online. Enjoy this strategic game with friends.">
+  <meta name="keywords" content="TicTacToe, Tic Tac Toe, Infinite TicTacToe, Infinite Tic Tac Toe, online games, strategy games">
   <meta name="author" content="Amit Parajuli">
-  <meta property="og:title" content="BaghChaal Game - Play With Friends">
-  <meta property="og:description" content="Play BaghChaal, the traditional Nepali board game, online. Enjoy this strategic game of tigers and goats with friends or against the computer.">
+  <meta property="og:title" content="Infinite Tic-Tac-Toe - Play With Friends">
+  <meta property="og:description" content="Play Infinite Tic-Tac-Toe, the traditional board game but with twist, online. Enjoy this strategic game with friends.">
   <meta property="og:image" content="https://baghchaal.com/images/og-image.webp">
   <meta property="og:url" content="https://baghchaal.com">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="BaghChaal Game">
+  <meta property="og:site_name" content="Infitite Tic-Tac-Toe">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
@@ -75,12 +75,12 @@
 <body>
   <!-- Game Div -->
   <div id="game">
-    <h1 style="margin: 0; text-shadow: 0 0 4px #ea2fb5, 0 0 8px #2b65ff;">♾️ TIC TAC TOE ♾️</h1>
+    <h1>♾️ TIC TAC TOE ♾️</h1>
     <p style="margin-top: 0; text-align: center;">
       Every three moves, the last move of the player is removed.<br />The game continues infinitely until a player wins.
     </p>
     <main></main>
-    <p id="game_message" style="margin: 0 8px; text-shadow: 0 0 4px #ea2fb5, 0 0 8px #2b65ff;"></p>
+    <p id="game_message"></p>
     <table>
       <tr style="font-size: 1.2em;">
         <td id="player1name">Player 1</td>
@@ -91,8 +91,6 @@
         <td id="player2win">0</td>
       </tr>
     </table>
-    <p style="display: none; margin: 0; font-size: large;" id="play_again_message">
-    </p>
     <div style="display: flex; width: 100%; max-width: 400px; gap: 4px; align-items: center; justify-content: center; margin: 0 16px;">
       <button id="play_again" style="display: none;" onclick="playAgain()">Play Again</button>
       <button onclick="exitGame()" style="background-color: brown;">Leave Game</button>

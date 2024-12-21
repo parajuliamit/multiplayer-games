@@ -15,15 +15,11 @@ const io = new Server(server, {
 // Serve static files
 app.use(express.static(__dirname + "/public"));
 
-const toDisconnect = [];
 const rooms = {};
 const players = {};
 const waitingPlayers = [];
 
 io.on("connection", (socket) => {
-  if (toDisconnect.includes(socket.id)) {
-    toDisconnect.splice(toDisconnect.indexOf(socket.id), 1);
-  }
   if (players.length > 100) {
     socket.emit("room_join_error", "Server is full");
     socket.disconnect();
@@ -45,15 +41,8 @@ io.on("connection", (socket) => {
   // -------------------------------------------Game Logic ----------------------------------------------
 
   // Create or join a game room
-  socket.on("create_room", (roomId) => {
-    if (roomId?.length !== 4) {
-      socket.emit("room_create_error", "Room ID must be 4 characters long");
-      return;
-    }
-    if (rooms[roomId]) {
-      socket.emit("room_create_error", `Room with ID ${roomId} already exists`);
-      return;
-    }
+  socket.on("create_room", () => {
+    const roomId = getRandomRoomId();
     leaveRoom(socket.id);
     socket.join(roomId);
     rooms[roomId] = {
@@ -72,7 +61,7 @@ io.on("connection", (socket) => {
         return;
       }
       const match = waitingPlayers.shift();
-      const roomId = Math.random().toString(36).substring(2, 6);
+      const roomId = getRandomRoomId();
       socket.join(roomId);
       match.join(roomId);
 
@@ -202,7 +191,7 @@ io.on("connection", (socket) => {
     }
     const room = rooms[roomId];
     if (room.players.length < 2) {
-      socket.emit("game_message", "Opponent left the room");
+      socket.emit("player_left", roomId);
       return;
     }
 
@@ -221,7 +210,7 @@ io.on("connection", (socket) => {
     }
     const room = rooms[roomId];
     if (room.players.length < 2) {
-      socket.emit("game_message", "Opponent left the room");
+      socket.emit(socket.emit("player_left", roomId));
       return;
     }
     room.moves = [];
@@ -238,21 +227,13 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     if (waitingPlayers.includes(socket)) {
       waitingPlayers.splice(waitingPlayers.indexOf(socket), 1);
-      return;
+    } else {
+      leaveRoom(socket.id);
     }
-    toDisconnect.push(socket.id);
-    setTimeout(() => {
-      if (toDisconnect.includes(socket.id)) {
-        leaveRoom(socket.id);
-      }
-    }, 3000);
   });
 });
 
 function checkWinner(moves, history) {
-  if (history.length === 9) {
-    return ["draw"];
-  }
   if (history.length > 3) {
     const winningCondition = [
       [0, 1, 2],
@@ -274,6 +255,14 @@ function checkWinner(moves, history) {
       }
     }
   }
+}
+
+function getRandomRoomId() {
+  const roomId = Math.random().toString(36).substring(2, 6);
+  if (rooms[roomId]) {
+    return getRandomRoomId();
+  }
+  return roomId;
 }
 
 const PORT = process.env.PORT || 3000;

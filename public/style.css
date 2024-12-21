@@ -16,6 +16,8 @@ canvas {
 }
 
 h1 {
+  margin: 0;
+  text-shadow: 0 0 4px #ea2fb5, 0 0 8px #2b65ff;
   text-align: center;
   font-size: 2em;
   color: blanchedalmond;
@@ -35,6 +37,8 @@ p {
 #game_message {
   font-size: 1.8em;
   color: blanchedalmond;
+  margin: 0 8px;
+  text-shadow: 0 0 4px #ea2fb5, 0 0 8px #2b65ff;
 }
 
 #info {

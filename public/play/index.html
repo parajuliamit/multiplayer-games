@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Infinite Tic-Tac-Toe | Play With Friends</title>
+  <meta name="description" content="Play Infinite Tic-Tac-Toe, the traditional board game but with twist, online. Enjoy this strategic game with friends.">
+  <meta name="keywords" content="TicTacToe, Tic Tac Toe, Infinite TicTacToe, Infinite Tic Tac Toe, online games, strategy games">
+  <meta name="author" content="Amit Parajuli">
+  <meta property="og:title" content="Infinite Tic-Tac-Toe - Play With Friends">
+  <meta property="og:description" content="Play Infinite Tic-Tac-Toe, the traditional board game but with twist, online. Enjoy this strategic game with friends.">
+  <meta property="og:image" content="https://baghchaal.com/images/og-image.webp">
+  <meta property="og:url" content="https://baghchaal.com">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Infitite Tic-Tac-Toe">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/images/favicon/site.webmanifest">
+
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script> -->
+  <script src="/p5.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <meta charset="utf-8" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap');
+  </style>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+</head>
+
+<body>
+  <!-- Info Div -->
+  <div style="display: flex; justify-content: center;" id="container">
+    <div id="info">
+      <h1>♾️ TIC TAC TOE ♾️</h1>
+      <p style="margin: 8px;">Welcome to Infinite Tic-Tac-Toe Multiplayer!</p>
+      <p id="status" style="margin: 0; color: #f00;">Status: <span id="currentStatus">Disconnected</span></p>
+      <!-- Loader Div -->
+      <div id="connecting" style="display: none;">
+        <div class="loader"></div>
+        <p style="color:blueviolet;" id="loadingMessage"></p>
+        <button style="background-color: brown;" onclick="exitGame()">Cancel</button>
+      </div>
+      <!-- Loader Div End -->
+      <!-- Waiting for other after room creation -->
+      <div id="waiting" style="align-items: center; justify-content: center; flex-direction: column; display: none;">
+        <p style="color:blueviolet;">
+          Waiting for another player to join...
+        </p>
+        <div id="roomId" style="font-weight: bold; text-align: center; font-size: xx-large; background-color: blueviolet; border-radius: 8px; padding: 8px 24px; margin-bottom: 16px;">
+          <p style="font-weight: 300; font-size: small; margin: 0; color: white;">ROOM ID</p>
+          <p id="roomIdText" style="margin: 0; color: white;"></p>
+        </div>
+        <button style="background-color: brown;" onclick="exitGame()">Cancel</button>
+      </div>
+      <!-- Waiting for other after room creation end -->
+    </div>
+  </div>
+  <!-- Info Div Ends -->
+  <!-- Game and Chat -->
+  <div id="game_chat" style="display: none;">
+    <!-- Game Div -->
+    <div id="game">
+      <h1>♾️ TIC TAC TOE ♾️</h1>
+      <p style="margin-top: 0; text-align: center;">
+        Every three moves, the last move of the player is removed.<br />The game continues infinitely until a player wins.
+      </p>
+      <main></main>
+      <p id="game_message"></p>
+      <h2>
+        <span style="color: green;">WIN</span> <span style="color: red;">LOSS</span> : <span id="win" style="color: green;">0</span> | <span id="loss" style="color: red;">0</span>
+      </h2>
+      <p style="display: none; margin: 0; font-size: large;" id="play_again_message"></p>
+      <div style="display: flex; width: 100%; max-width: 400px; gap: 4px; align-items: center; justify-content: center; margin: 0 16px;">
+        <button id="play_again" onclick="playAgain()" style="display: none;">Play Again</button>
+        <button onclick="exitGame()" style="background-color: brown;">Leave Game</button>
+      </div>
+    </div>
+    <!-- Game Div Ends -->
+    <!-- Chat Div -->
+    <div id="chat_feature">
+      <h2 style="margin: 0; padding: 6px 16px;">
+        MESSAGE
+      </h2>
+      <div class="reaction top" style="display:none;">
+        <p>😂</p>
+        <p>😍</p>
+        <p>😡</p>
+        <p>😭</p>
+        <p>Well Played 👏</p>
+        <p>Good Game 👌</p>
+      </div>
+      <div style="flex: 1; height: 100%; background-color: #000; overflow-y: auto; display: flex; align-items: flex-end; justify-content: stretch;" id="chat">
+        <div id="messages"></div>
+      </div>
+      <div class="reaction bottom">
+        <p>😂</p>
+        <p>😍</p>
+        <p>😡</p>
+        <p>😭</p>
+        <p>Well Played 👏</p>
+        <p>Good Game 👌</p>
+      </div>
+      <div class="message-container">
+        <input type="text" id="messageInput" class="message-input" placeholder="Type your message..." style="flex: 8; text-align: left; font-size: medium; max-width: 100%;" />
+        <button id="sendButton" class="send-button" onclick="sendMessage()">
+          ᗒ
+        </button>
+      </div>
+    </div>
+    <!-- Chat Div Ends -->
+  </div>
+  <!-- Game and Chat End -->
+  <script src="socket.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type')?.trim();
+    if (type === 'create') {
+      startGame();
+    } else if (type === 'join') {
+      const room = urlParams.get('room')?.trim();
+      if (room?.length === 4) {
+        startGame(room);
+      } else {
+        window.location.href = '/?error=Room ID must be 4 characters long.';
+      }
+    } else if (type === 'random') {
+      startGame('random');
+    } else {
+      window.location.href = '/';
+    }
+  </script>
+  <script src="sketch.js"></script>
+</body>
+
+</html>

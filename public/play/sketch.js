@@ -1,84 +1,35 @@
 let TILE_SIZE;
 let BOARD_MARGIN;
 let choices = [];
-let coiceHistory = [];
 let nextRemove;
 let gameFinished;
-let currentTurn = {};
+let myTurn = false;
 let drawingTile;
 let drawingStep = 0;
 let drawingSign;
+let mySign;
 let winningCondition;
 
-let player1;
-let player2;
-let lastStart;
-
 const gameMessageDiv = document.getElementById("game_message");
-const playAgainButton = document.getElementById("play_again");
-
-const player1Win = document.getElementById("player1win");
-const player2Win = document.getElementById("player2win");
-const inputModal = document.getElementById("modalOverlay");
-const playBtn = document.getElementById("playBtn");
-const player1Input = document.getElementById("player1");
-const player2Input = document.getElementById("player2");
-const player1Name = document.getElementById("player1name");
-const player2Name = document.getElementById("player2name");
-
-function exitGame() {
-  if (confirm("Are you sure you want to leave the game?")) {
-    window.location.href = "/";
-  }
-}
-
-function playAgain() {
-  document.getElementById("play_again").style.display = "none";
-  reset();
-}
 
 function setup() {
   const calculatedWidth = min(windowWidth, 390);
   createCanvas(calculatedWidth, calculatedWidth);
   BOARD_MARGIN = calculatedWidth / 15;
   TILE_SIZE = (calculatedWidth - BOARD_MARGIN * 2) / 3;
+  reset(false);
+  gameFinished = true;
   noLoop();
-  inputModal.style.display = "flex";
-  playBtn.addEventListener("click", () => {
-    inputModal.style.display = "none";
-    player1 = player1Input.value;
-    player2 = player2Input.value;
-    player1Input.value = "";
-    player2Input.value = "";
-
-    if (!player1.trim() || !player2.trim()) {
-      player1 = "Player 1";
-      player2 = "Player 2";
-    }
-    player1 = player1.length > 10 ? player1.substring(0, 10) : player1;
-    player2 = player2.length > 10 ? player2.substring(0, 10) : player2;
-    if (player1 === player2) {
-      player1 = player1 + " 1";
-      player2 = player2 + " 2";
-    }
-    player1Name.innerText = player1;
-    player2Name.innerText = player2;
-    reset();
-  });
 }
 
-function reset() {
-  currentTurn = {
-    player: lastStart === player1 ? player2 : player1,
-    sign: "X",
-  };
-  lastStart = currentTurn.player;
+function reset(turn) {
+  mySign = turn ? "X" : "O";
   winningCondition = null;
   choices = [];
-  gameMessageDiv.innerText = currentTurn.player + "'s Turn";
+  gameMessageDiv.innerText = turn ? "Your Turn" : "Opponent's Turn";
   gameFinished = false;
+  myTurn = turn;
   nextRemove = undefined;
-  coiceHistory = [];
   drawingTile = null;
   drawingStep = 0;
   drawingSign = null;
@@ -94,7 +45,7 @@ function touchStarted() {
 }
 
 function clickTile(x, y) {
-  if (gameFinished || !player1 || !player2) {
+  if (gameFinished || !myTurn) {
     return;
   }
 
@@ -112,20 +63,34 @@ function clickTile(x, y) {
   const currentTile = i + j * 3;
 
   if (!choices[currentTile]) {
-    drawingSign = currentTurn.sign;
+    drawingSign = mySign;
     drawingTile = currentTile;
     drawingStep = 0;
-    choices[currentTile] = drawingSign;
-    coiceHistory.push(currentTile);
-    if (nextRemove >= 0) choices[nextRemove] = undefined;
-    if (coiceHistory.length === 6) {
-      nextRemove = coiceHistory.shift();
+    loop();
+    makeMove(currentTile);
+  }
+}
+
+function updateMoveData(turn, moves, winner, next, lastMove, winCondition) {
+  myTurn = turn;
+  if (winner) {
+    gameMessageDiv.innerText = winner;
+    gameFinished = true;
+    winningCondition = winCondition;
+    redraw();
+  } else {
+    if (turn) {
+      gameMessageDiv.innerText = "Your Turn";
+    } else {
+      gameMessageDiv.innerText = "Opponent's Turn";
     }
-    if (coiceHistory.length < 5 || !checkWinner()) {
-      currentTurn.player = currentTurn.player === player1 ? player2 : player1;
-      currentTurn.sign = currentTurn.sign === "X" ? "O" : "X";
-      gameMessageDiv.innerText = currentTurn.player + "'s Turn";
-    }
+  }
+  choices = moves;
+  nextRemove = next;
+  if (myTurn) {
+    drawingSign = mySign === "X" ? "O" : "X";
+    drawingTile = lastMove;
+    drawingStep = 0;
     loop();
   }
 }
@@ -157,7 +122,7 @@ function draw() {
   drawGrid();
   drawingContext.shadowBlur = 20;
 
-  const winLine = [];
+  let winLine = [];
   for (let i = 0; i < 9; i++) {
     if (i === drawingTile) {
       if (drawingSign === "X") {
@@ -235,7 +200,6 @@ function draw() {
         drawX(i);
       }
     }
-
     if (
       winningCondition &&
       (winningCondition[0] === i || winningCondition[2] === i)
@@ -246,7 +210,6 @@ function draw() {
       winLine.push(y);
     }
   }
-
   drawWinLine(winLine);
 }
 
@@ -275,35 +238,4 @@ function drawWinLine(winLine) {
   drawingContext.shadowColor = "rgba(0, 255, 0, 0.8)";
   stroke(0, 255, 0, 150);
   line(winLine[0], winLine[1], winLine[2], winLine[3]);
-}
-
-function checkWinner() {
-  const winningConditions = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let condition of winningConditions) {
-    if (
-      choices[condition[0]] &&
-      choices[condition[0]] === choices[condition[1]] &&
-      choices[condition[1]] === choices[condition[2]]
-    ) {
-      winningCondition = condition;
-      gameFinished = true;
-      gameMessageDiv.innerText = currentTurn.player + " Wins !";
-      playAgainButton.style.display = "block";
-      if (currentTurn.player === player1) {
-        player1Win.innerText = parseInt(player1Win.innerText) + 1;
-      } else {
-        player2Win.innerText = parseInt(player2Win.innerText) + 1;
-      }
-      return true;
-    }
-  }
 }
