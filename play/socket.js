@@ -38,8 +38,8 @@ function exitGame() {
 }
 
 function startGame(room) {
-  socket = io();
-  // const socket = io("https://baghchaal.com");
+  // socket = io();
+  socket = io("https://api.baghchaal.com");
 
   socket.on("connect", () => {
     statusDiv.style.color = "green";
