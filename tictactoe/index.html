@@ -19,15 +19,29 @@
   <link rel="manifest" href="./favicon/site.webmanifest">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" type="text/css" href="style.css" />
   <meta charset="utf-8" />
-
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link rel="stylesheet" type="text/css" href="../main.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap');
   </style>
 </head>
 
 <body>
+  <header>
+    <a href="/">
+      <div style="display: flex; align-items: center;"> <img src="../images/tiger.png" width="50" height="50">
+        <h1>BaghChaal</h1><img src="../images/goat.png" width="50" height="50">
+      </div>
+
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/#games">Games</a>
+      <!-- <a href="#about">About</a>
+      <a href="#contact">Contact</a> -->
+    </nav>
+  </header>
   <!-- Info Div -->
   <div style="display: flex; justify-content: center;" id="container">
     <div id="info">
@@ -55,7 +69,9 @@
     </div>
   </div>
   <!-- Info Div Ends -->
-
+  <footer>
+    <p>&copy; 2024 BaghChaal.com. All rights reserved.</p>
+  </footer>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const room = urlParams.get('room')?.trim();
