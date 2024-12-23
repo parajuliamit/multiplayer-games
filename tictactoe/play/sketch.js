@@ -26,7 +26,7 @@ function reset(turn) {
   mySign = turn ? "X" : "O";
   winningCondition = null;
   choices = [];
-  gameMessageDiv.innerText = turn ? "Your Turn" : "Opponent's Turn";
+  gameMessageDiv.innerText = turn ? "Your Turn (X)" : "Opponent's Turn (X)";
   gameFinished = false;
   myTurn = turn;
   nextRemove = undefined;
@@ -80,9 +80,10 @@ function updateMoveData(turn, moves, winner, next, lastMove, winCondition) {
     redraw();
   } else {
     if (turn) {
-      gameMessageDiv.innerText = "Your Turn";
+      gameMessageDiv.innerText = "Your Turn (" + mySign + ")";
     } else {
-      gameMessageDiv.innerText = "Opponent's Turn";
+      gameMessageDiv.innerText =
+        "Opponent's Turn (" + (mySign === "X" ? "O" : "X") + ")";
     }
   }
   choices = moves;
