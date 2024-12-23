@@ -39,7 +39,7 @@ function exitGame() {
 
 function startGame(room) {
   // socket = io();
-  socket = io("https://api.baghchaal.com");
+  socket = io("http://localhost:3000");
 
   socket.on("connect", () => {
     statusDiv.style.color = "green";
