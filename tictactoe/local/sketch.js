@@ -75,7 +75,8 @@ function reset() {
   lastStart = currentTurn.player;
   winningCondition = null;
   choices = [];
-  gameMessageDiv.innerText = currentTurn.player + "'s Turn";
+  gameMessageDiv.innerText =
+    currentTurn.player + "'s Turn ( " + currentTurn.sign + " )";
   gameFinished = false;
   nextRemove = undefined;
   coiceHistory = [];
@@ -124,7 +125,8 @@ function clickTile(x, y) {
     if (coiceHistory.length < 5 || !checkWinner()) {
       currentTurn.player = currentTurn.player === player1 ? player2 : player1;
       currentTurn.sign = currentTurn.sign === "X" ? "O" : "X";
-      gameMessageDiv.innerText = currentTurn.player + "'s Turn";
+      gameMessageDiv.innerText =
+        currentTurn.player + "'s Turn ( " + currentTurn.sign + " )";
     }
     loop();
   }
