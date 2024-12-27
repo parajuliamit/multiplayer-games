@@ -28,61 +28,149 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap');
   </style>
+  <style>
+    /* Modal Background */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Modal Content */
+    .modal {
+      border: 2px solid #fff;
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      width: 240px;
+      box-shadow: 2px 4px 8px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Modal Options */
+    .modal-option {
+      padding: 16px;
+      border: 1px solid #777;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .modal-option:hover {
+      box-shadow: 0 0 12px 4px blueviolet;
+      border-color: blueviolet;
+      background: #8a2be233;
+    }
+  </style>
 </head>
 
 <body>
-  <div id="game_title">
-    <div id="title_div">
-      <a href="/">
-        <div class="top_icon" style="margin-bottom: -30px; justify-content: center;">
-          <img width="80" height="80" src="../images/tiger.png" alt="tiger bagh baagh baag" id="title_bagh" />
-          <!-- <img style="margin-top: 4px;" width="55" height="55" src="../images/goat.png" alt="goat boka khasi bheda" /> -->
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <img width="40" height="40" src="../images/tiger.png" alt="tiger bagh baagh baag" class="side_icon" />
-          <h1 id="title">बाघ चाल</h1>
-          <img style="margin-top: 4px;" width="45" height="45" src="../images/goat.png" alt="goat boka khasi bheda" class="side_icon" />
-        </div>
-      </a>
-      <div>
-        <div id="turn_div">
-          <h2>TURN</h2>
-          <img style="display: none;" id="turn" alt="goat tiger bagh chal" />
-        </div>
-        <div id="stats_div">
-          <div class="stats">
-            <p class="side_icon">GOATS | </p>
-            <p class="top_icon">GOATS</p>
-            <p style="color: lightgreen">Alive : <span id="alive"></span></p>
-            <p style="color: lightcoral">Killed : <span id="killed"></span></p>
-            <p style="color: skyblue">Available : <span id="available"></span></p>
-          </div>
-          <div class="stats" style="color: coral; align-items: center;">
-            <p class="side_icon">TIGERS TRAPPED : </p>
-            <p class="top_icon" style="text-align: center;">TIGERS<br />TRAPPED</p>
-            <p id="trapped"></p>
-          </div>
-        </div>
+  <header>
+    <a href="/">
+      <div style="display: flex; align-items: center;"> <img src="../images/tiger.png" width="50" height="50">
+        <h1>BaghChaal</h1><img src="../images/goat.png" width="50" height="50">
       </div>
-      <button id="restart_side" class="danger_button" style="margin: 12px;">RESTART</button>
+
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/#games">Games</a>
+      <!-- <a href="#about">About</a>
+      <a href="#contact">Contact</a> -->
+    </nav>
+  </header>
+  <!-- Info Div -->
+  <div style="display: flex; justify-content: center;" id="container">
+    <div id="info">
+      <h1>🐯 बाघ चाल 🐐</h1>
+      <p style="margin: 8px;">Welcome to BaghChaal Multiplayer!</p>
+      <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
+        <a href="/baghchaal/local/" style="width: 100%; margin: 4px;">
+          <button id="play_local">Play Locally</button>
+        </a>
+        <p style="margin: 4px;">OR</p>
+        <!-- <a href="/baghchaal/play?type=random" style="width: 100%; margin: 4px;"> -->
+        <button id="random_match">Play Online</button>
+        <!-- </a> -->
+        <p style="margin: 4px;">OR</p>
+        <!-- <a href="/baghchaal/play?type=create" style="width: 100%; margin: 4px;"> -->
+        <button id="create_button">Create Private Game</button>
+        <!-- </a> -->
+        <p style="margin: 4px;">OR</p>
+        <form id="join_form" onsubmit="joinGame(event)">
+          <input id="join_room" type="text" placeholder="ENTER ROOM ID TO JOIN" />
+          <button id="join_button" type="submit">Join Private Game</button>
+        </form>
+        <p id="join_error" class="error" style="margin: 0;"></p>
+      </div>
     </div>
-    <div id="game" class="glowing-border">
-      <main></main>
-    </div>
-    <button id="restart_bottom" class="danger_button">RESTART</button>
   </div>
-  <script src="sketch.js"></script>
+  <!-- Info Div Ends -->
+  <!-- Modal Overlay -->
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal">
+      <h2 style="margin-bottom: 32px; margin-top: 0;">Pick One</h2>
+      <div style="display: flex; justify-content: space-around; margin-bottom: 16px;">
+        <a id="play_as_goat">
+          <div class="modal-option">
+            <img src="../images/goat.png" width="50" height="50">
+          </div>
+        </a>
+        <a id="play_as_tiger">
+          <div class="modal-option">
+            <img src="../images/tiger.png" width="50" height="50">
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Overlay Ends -->
+  <footer>
+    <p>&copy; 2024 BaghChaal.com. All rights reserved.</p>
+  </footer>
   <script>
-    const restart = document.getElementById('restart_side');
-    const restart_bottom = document.getElementById('restart_bottom');
-    restart.addEventListener('click', () => {
-      if (confirm('Are you sure you want to restart the game?'))
-        resetGame();
-    });
-    restart_bottom.addEventListener('click', () => {
-      if (confirm('Are you sure you want to restart the game?'))
-        resetGame();
-    });
+    const modalOverlay = document.getElementById('modalOverlay');
+    const randomMatchButton = document.getElementById('random_match');
+    const createButton = document.getElementById('create_button');
+    const playAsGoat = document.getElementById('play_as_goat');
+    const playAsTiger = document.getElementById('play_as_tiger');
+
+    randomMatchButton.onclick = () => {
+      modalOverlay.style.display = 'flex';
+      playAsGoat.href = '/baghchaal/play?type=random&role=goat';
+      playAsTiger.href = '/baghchaal/play?type=random&role=tiger';
+    }
+
+    createButton.onclick = () => {
+      modalOverlay.style.display = 'flex';
+      playAsGoat.href = '/baghchaal/play?type=create&role=goat';
+      playAsTiger.href = '/baghchaal/play?type=create&role=tiger';
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const room = urlParams.get('room')?.trim();
+    if (room) {
+      document.getElementById('join_room').value = room;
+    }
+
+    const error = urlParams.get('error')?.trim();
+    if (error) {
+      document.getElementById('join_error').innerText = error;
+    }
+
+    const joinGame = (event) => {
+      event.preventDefault();
+      const roomId = document.getElementById('join_room').value.trim();
+      if (roomId?.length !== 4) {
+        document.getElementById('join_error').innerText = 'Room ID must be 4 characters long.';
+      } else {
+        window.location.href = `/baghchaal/play?room=${roomId}&type=join`;
+      }
+    }
   </script>
 </body>
 

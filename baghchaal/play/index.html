@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>BaghChaal Game - Play With Friends</title>
+  <meta name="description" content="Play BaghChaal, the traditional Nepali board game, online. Enjoy this strategic game of tigers and goats with friends or against the computer.">
+  <meta name="keywords" content="BaghChaal, BaghChal, BaagChal, Bagchal, Baagchaal, Bagh Chal, Nepali board game, tigers and goats, online games, strategy games">
+  <meta name="author" content="Amit Parajuli">
+  <meta property="og:title" content="BaghChaal Game - Play With Friends">
+  <meta property="og:description" content="Play BaghChaal, the traditional Nepali board game, online. Enjoy this strategic game of tigers and goats with friends or against the computer.">
+  <meta property="og:image" content="https://baghchaal.com/images/og-image.webp">
+  <meta property="og:url" content="https://baghchaal.com">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BaghChaal Game">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="../../images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../images/favicon/favicon-16x16.png">
+  <link rel="manifest" href="../../images/favicon/site.webmanifest">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
+  <!-- <script src="p5.js"></script> -->
+  <link rel="stylesheet" type="text/css" href="../baghchaal.css" />
+  <link rel="stylesheet" type="text/css" href="../../main.css" />
+  <link rel="stylesheet" type="text/css" href="common.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap');
+  </style>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+</head>
+
+<body>
+  <!-- Info Div -->
+  <div style="display: flex; justify-content: center;" id="container">
+    <div id="info">
+      <h1>🐯 बाघ चाल 🐐</h1>
+      <p style="margin: 8px;">Welcome to BaghChaal Multiplayer!</p>
+      <p id="status" style="margin: 0; color: #f00;">Status: <span id="currentStatus">Disconnected</span></p>
+      <!-- Loader Div -->
+      <div id="connecting" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+        <div class="loader"></div>
+        <p style="color:blueviolet;" id="loadingMessage"></p>
+        <button class="danger_button" onclick="exitGame()" style="margin: 8px;">Cancel</button>
+      </div>
+      <!-- Loader Div End -->
+      <!-- Waiting for other after room creation -->
+      <div id="waiting" style="align-items: center; justify-content: center; flex-direction: column; display: none; padding: 8px;">
+        <p style="color:blueviolet;">
+          Waiting for another player to join...
+        </p>
+        <div id="roomId" style="font-weight: bold; text-align: center; font-size: xx-large; background-color: blueviolet; border-radius: 8px; padding: 8px 24px; margin: 16px;">
+          <p style="font-weight: 300; font-size: small; margin: 0; color: white;">ROOM ID</p>
+          <p id="roomIdText" style="margin: 0; color: white;"></p>
+        </div>
+        <button class="danger_button" onclick="exitGame()">Cancel</button>
+      </div>
+      <!-- Waiting for other after room creation end -->
+    </div>
+  </div>
+  <!-- Info Div Ends -->
+  <!-- Game Div -->
+  <div id="game_title" style="display: none;">
+    <div id="title_div">
+      <div class="top_icon" style="margin-bottom: -30px; justify-content: center;">
+        <img width="80" height="80" src="../../images/tiger.png" alt="tiger bagh baagh baag" id="title_bagh" />
+        <!-- <img style="margin-top: 4px;" width="55" height="55" src="../images/goat.png" alt="goat boka khasi bheda" /> -->
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <img width="40" height="40" src="../../images/tiger.png" alt="tiger bagh baagh baag" class="side_icon" />
+        <h1 id="title">बाघ चाल</h1>
+        <img style="margin-top: 4px;" width="45" height="45" src="../../images/goat.png" alt="goat boka khasi bheda" class="side_icon" />
+      </div>
+      <div>
+        <div id="turn_div">
+          <h2 id="turn"></h2>
+          <img style="display: none;" id="goatImage" class="turn_image" src="../../images/goat.png" alt="goat tiger bagh chal" />
+          <img style="display: none;" id="tigerImage" class="turn_image" src="../../images/tiger.png" alt="goat tiger bagh chal" />
+        </div>
+        <div id="stats_div">
+          <div class="stats">
+            <p class="side_icon">GOATS | </p>
+            <p class="top_icon">GOATS</p>
+            <p style="color: lightgreen">Alive : <span id="alive"></span></p>
+            <p style="color: lightcoral">Killed : <span id="killed"></span></p>
+            <p style="color: skyblue">Available : <span id="available"></span></p>
+          </div>
+          <div class="stats" style="color: coral; align-items: center;">
+            <p class="side_icon">TIGERS TRAPPED : </p>
+            <p class="top_icon" style="text-align: center;">TIGERS<br />TRAPPED</p>
+            <p id="trapped"></p>
+          </div>
+        </div>
+      </div>
+      <button id="restart_side" class="danger_button" style="margin: 12px;">LEAVE</button>
+    </div>
+    <div id="game" class="glowing-border">
+      <main></main>
+      <button style="position: absolute; display: none; transform: translateY(50px);" id="playAgainButton">Play Again</button>
+    </div>
+    <button id="restart_bottom" class="danger_button">LEAVE</button>
+  </div>
+  <!-- Game Div Ends -->
+  <script src="sketch.js"></script>
+  <script src="socket.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type')?.trim();
+    const role = urlParams.get('role')?.trim();
+    if (type === 'create') {
+      if (role === 'tiger') {
+        startGame('create', 'tiger');
+      } else if (role === 'goat') {
+        startGame('create', 'goat');
+      } else {
+        window.location.href = '/baghchaal/?error=Invalid role.';
+      }
+    } else if (type === 'join') {
+      const room = urlParams.get('room')?.trim();
+      if (room?.length === 4) {
+        startGame(room);
+      } else {
+        window.location.href = '/baghchaal/?error=Room ID must be 4 characters long.';
+      }
+    } else if (type === 'random') {
+      if (role === 'tiger') {
+        startGame('random', 'tiger');
+      } else if (role === 'goat') {
+        startGame('random', 'goat');
+      } else {
+        window.location.href = '/baghchaal/?error=Invalid role.';
+      }
+    } else {
+      window.location.href = '/baghchaal/';
+    }
+
+    const restart = document.getElementById('restart_side');
+    const restart_bottom = document.getElementById('restart_bottom');
+    restart.addEventListener('click', () => {
+      if (confirm('Are you sure you want to exit the game?'))
+        window.location.href = '/baghchaal/';
+    });
+    restart_bottom.addEventListener('click', () => {
+      if (confirm('Are you sure you want to exit the game?'))
+        window.location.href = '/baghchaal/';
+    });
+  </script>
+</body>
+
+</html>

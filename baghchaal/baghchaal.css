@@ -1,0 +1,303 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  height: 100%;
+  width: 100%;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #fff;
+}
+
+button {
+  z-index: 2;
+  cursor: pointer;
+  background: linear-gradient(0deg, #00f7ff, #2b65ff);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 1em;
+  box-shadow: 0 0 5px #00f7ff, 0 0 10px #2b65ff;
+}
+
+canvas {
+  display: block;
+  border-radius: 6px;
+}
+
+#game_title {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+#game {
+  border: 2px solid #777;
+  margin: 16px;
+  padding: 4px;
+}
+
+.glowing-border {
+  margin: 48px auto;
+  background: black;
+  color: white;
+  text-align: center;
+  line-height: 100px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glowing-border:before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 10px;
+  background: linear-gradient(
+    45deg,
+    /*     #ff0000,
+    #ff3300,
+    #ffeb00, */ #33ff00,
+    #00f7ff,
+    #2b65ff,
+    #8000ff
+  );
+  background-size: 300% 300%;
+  animation: glowing 6s linear infinite;
+  z-index: -1;
+  filter: blur(5px);
+}
+
+@keyframes glowing {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.danger_button {
+  background: linear-gradient(0deg, #ff0000, #ff3300);
+  box-shadow: 0 0 5px #ff0000, 0 0 10px #ff3300;
+}
+
+p {
+  margin: 0;
+}
+
+h2 {
+  margin: 0;
+}
+
+.stats {
+  font-size: 1.2em;
+  font-weight: 600;
+  gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  flex-direction: column;
+  text-shadow: 0 0 10px #ea2fb5, 0 0 20px #2b65ff;
+}
+
+.turn_image {
+  height: 50px;
+  width: 50px;
+}
+
+#turn_div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: #222;
+  border-radius: 8px;
+  padding: 8px;
+  gap: 8px;
+  text-shadow: 0 0 10px #ea2fb5, 0 0 20px #2b65ff;
+  box-shadow: 0 0 5px #00f7ff, 0 0 10px #2b65ff;
+  margin: 8px;
+}
+
+#title {
+  font-size: 4em;
+  margin: 0;
+  text-align: center;
+  color: #eebc49;
+  text-shadow: 0 0 10px #ea2fb5, 0 0 20px #2b65ff;
+}
+
+#title_div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 24px;
+  margin-bottom: -10px;
+}
+
+.top_icon {
+  display: flex;
+}
+
+.side_icon {
+  display: none;
+}
+
+#stats_div {
+  display: flex;
+  gap: 8px;
+  margin: 16px 8px 0 8px;
+}
+
+#restart_bottom {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .glowing-border {
+    margin: 24px auto;
+  }
+
+  #restart_bottom {
+    display: flex;
+  }
+
+  #stats_div {
+    flex-direction: column;
+  }
+
+  .turn_image {
+    height: 40px;
+    width: 40px;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  #game_title {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  #title_div {
+    margin-top: 8px;
+  }
+
+  .stats {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #turn_div {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+
+  #title {
+    font-size: 3em;
+  }
+
+  .side_icon {
+    display: block;
+  }
+
+  .top_icon {
+    display: none;
+  }
+
+  #restart_side {
+    display: none;
+  }
+}
+
+@media (max-height: 600px) {
+  #title {
+    font-size: 3em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  #title_div {
+    margin-top: 16px;
+  }
+
+  #turn_div {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+
+  .stats {
+    font-size: 1em;
+  }
+
+  button {
+    font-weight: 500;
+    padding: 4px 8px;
+    font-size: 0.8em;
+  }
+
+  #title_bagh {
+    width: 55px;
+    height: 55px;
+  }
+}
+
+@media (min-height: 920px) {
+  #game_title {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .stats {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #turn_div {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+
+  #title_div {
+    margin-top: 8px;
+  }
+
+  .side_icon {
+    display: block;
+  }
+
+  .top_icon {
+    display: none;
+  }
+
+  #restart_bottom {
+    display: flex;
+  }
+
+  #restart_side {
+    display: none;
+  }
+}

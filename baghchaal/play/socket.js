@@ -10,14 +10,23 @@ const loadingDiv = document.getElementById("connecting");
 const loadingMessage = document.getElementById("loadingMessage");
 
 const gameInfoDiv = document.getElementById("container");
-const gameDiv = document.getElementById("game_chat");
+const gameDiv = document.getElementById("game_title");
 
-const messageInput = document.getElementById("messageInput");
+const turn = document.getElementById("turn");
+const goatImage = document.getElementById("goatImage");
+const tigerImage = document.getElementById("tigerImage");
+
+const goatsAvailableDiv = document.getElementById("available");
+const goatsAliveDiv = document.getElementById("alive");
+const goatsKilledDiv = document.getElementById("killed");
+const trappedDiv = document.getElementById("trapped");
+
+// const messageInput = document.getElementById("messageInput");
 
 const win = document.getElementById("win");
 const loss = document.getElementById("loss");
-const playAgainMessage = document.getElementById("play_again_message");
-const playAgainButton = document.getElementById("play_again");
+// const playAgainMessage = document.getElementById("play_again_message");
+// const playAgainButton = document.getElementById("play_again");
 
 const quickMessage = document.querySelectorAll(".reaction p");
 
@@ -27,26 +36,26 @@ for (let i = 0; i < quickMessage.length; i++) {
   });
 }
 
-let isPlayAgainRequested = false;
-let youRequestedPlayAgain = false;
+// let isPlayAgainRequested = false;
+// let youRequestedPlayAgain = false;
 
 function exitGame() {
   if (!confirm("Are you sure you want to leave the game?")) {
     return;
   }
-  window.location.href = "/tictactoe/";
+  window.location.href = "/baghchaal/";
 }
 
-function startGame(room) {
-  socket = io("https://api.baghchaal.com");
+function startGame(room, role) {
+  socket = io("http://localhost:3001");
 
   socket.on("connect", () => {
     statusDiv.style.color = "green";
     currentStatus.innerText = "Connected";
-    if (!room) {
-      createGame();
+    if (room === "create") {
+      createGame(role);
     } else if (room === "random") {
-      joinRandomGame();
+      joinRandomGame(role);
     } else {
       joinRoom(room);
     }
@@ -62,63 +71,64 @@ function startGame(room) {
     showLoading("Looking for an opponent...");
   });
 
-  socket.on("player_joined", ({ currentTurn }) => {
+  socket.on("player_joined", (roomInfo) => {
     hideEverything();
     gameInfoDiv.style.display = "none";
     gameDiv.style.display = "flex";
-    reset(currentTurn === socket.id);
-    if (youRequestedPlayAgain || isPlayAgainRequested) {
-      youRequestedPlayAgain = false;
-      isPlayAgainRequested = false;
-    } else {
-      win.innerText = 0;
-      loss.innerText = 0;
-    }
+    const myTurn = roomInfo.currentTurn.player === socket.id;
+    resetGame(
+      roomInfo.board,
+      roomInfo.currentTurn.piece,
+      myTurn,
+      roomInfo.goatRemaining
+    );
+    updateMoveData(roomInfo, myTurn);
+    // if (youRequestedPlayAgain || isPlayAgainRequested) {
+    //   youRequestedPlayAgain = false;
+    //   isPlayAgainRequested = false;
+    // } else {
+    //   win.innerText = 0;
+    //   loss.innerText = 0;
+    // }
   });
 
   socket.on("room_join_error", (error) => {
-    window.location.href = `/tictactoe?error=${error}`;
+    window.location.href = `/baghchaal?error=${error}`;
   });
 
-  socket.on("player_left", (roomId) => {
-    hideEverything();
-    waitingOtherDiv.style.display = "flex";
-    roomIdText.innerText = roomId;
-    gameInfoDiv.style.display = "flex";
-    gameDiv.style.display = "none";
+  socket.on("player_left", () => {
+    window.location.href = `/baghchaal?error=Opponent left the game`;
   });
 
-  socket.on("move_made", (result) => {
-    let winner = null;
-    if (result.winner) {
-      if (result.winner === socket.id) {
-        winner = "You Won :)";
-        win.innerText = parseInt(win.innerText) + 1;
-      } else {
-        winner = "Opponent Won :(";
-        loss.innerText = parseInt(loss.innerText) + 1;
-      }
-      playAgainButton.style.display = "block";
-    }
-    updateMoveData(
-      result.currentTurn === socket.id,
-      result.moves,
-      winner,
-      result.nextRemove,
-      result.lastMove,
-      result.winningCondition
+  socket.on("move_made", (roomInfo) => {
+    const myTurn = roomInfo.currentTurn.player === socket.id;
+    updateMoveData(roomInfo, myTurn);
+    moveMade(
+      roomInfo.board,
+      roomInfo.move,
+      roomInfo.currentTurn.piece,
+      myTurn,
+      roomInfo.goatRemaining,
+      roomInfo.winner
     );
-  });
-
-  socket.on("play_again_request", () => {
-    if (youRequestedPlayAgain) {
-      socket.emit("play_again_accept");
-    } else {
-      playAgainMessage.style.display = "flex";
-      playAgainMessage.innerText = "Opponent requested to play again.";
-      isPlayAgainRequested = true;
+    if (roomInfo.winner) {
+      const playAgainButton = document.getElementById("playAgainButton");
+      playAgainButton.style.display = "block";
+      playAgainButton.addEventListener("click", () => {
+        window.location.href = "/baghchaal/";
+      });
     }
   });
+
+  // socket.on("play_again_request", () => {
+  //   if (youRequestedPlayAgain) {
+  //     socket.emit("play_again_accept");
+  //   } else {
+  //     playAgainMessage.style.display = "flex";
+  //     playAgainMessage.innerText = "Opponent requested to play again.";
+  //     isPlayAgainRequested = true;
+  //   }
+  // });
 
   socket.on("disconnect", () => {
     statusDiv.style.color = "red";
@@ -129,7 +139,7 @@ function startGame(room) {
     showLoading("Reconnecting...");
     setTimeout(() => {
       if (socket.disconnected) {
-        window.location.href = "/tictactoe?error=Trouble connecting to server";
+        window.location.href = "/baghchaal?error=Trouble connecting to server";
       }
     }, 5000);
   });
@@ -152,25 +162,24 @@ function startGame(room) {
 
 function showLoading(message) {
   hideEverything();
-  loadingDiv.style.display = "block";
+  loadingDiv.style.display = "flex";
   loadingMessage.innerText = message;
 }
 
 function hideEverything() {
-  playAgainMessage.style.display = "none";
   loadingDiv.style.display = "none";
   loadingMessage.innerText = "";
   waitingOtherDiv.style.display = "none";
   roomIdText.innerText = "";
 }
 
-function createGame() {
-  socket.emit("create_room");
+function createGame(role) {
+  socket.emit("create_room", role);
   showLoading("Creating room...");
 }
 
-function joinRandomGame() {
-  socket.emit("random_match");
+function joinRandomGame(role) {
+  socket.emit("random_match", role);
   showLoading("Looking for an opponent...");
 }
 
@@ -179,31 +188,54 @@ function joinRoom(roomId) {
   showLoading("Joining room...");
 }
 
-function playAgain() {
-  playAgainButton.style.display = "none";
-  if (isPlayAgainRequested) {
-    playAgainMessage.style.display = "none";
-    socket.emit("play_again_accept");
+function updateMoveData(roomInfo, myTurn) {
+  goatsAvailableDiv.innerText = roomInfo.goatRemaining;
+  goatsKilledDiv.innerText = roomInfo.goatCaptured;
+  goatsAliveDiv.innerText = roomInfo.goatAlive;
+  trappedDiv.innerText = roomInfo.tigerTrapped;
+  setTurn(myTurn, roomInfo.currentTurn.piece);
+}
+
+function setTurn(isYourTurn, piece) {
+  if (isYourTurn) {
+    turn.innerText = "Your Turn";
   } else {
-    youRequestedPlayAgain = true;
-    playAgainMessage.style.display = "flex";
-    playAgainMessage.innerText = "Waiting for opponent to accept...";
-    socket.emit("play_again_request");
+    turn.innerText = "Opponent's Turn";
+  }
+  if (piece === "goat") {
+    goatImage.style.display = "block";
+    tigerImage.style.display = "none";
+  } else {
+    goatImage.style.display = "none";
+    tigerImage.style.display = "block";
   }
 }
 
+// function playAgain() {
+//   playAgainButton.style.display = "none";
+//   if (isPlayAgainRequested) {
+//     playAgainMessage.style.display = "none";
+//     socket.emit("play_again_accept");
+//   } else {
+//     youRequestedPlayAgain = true;
+//     playAgainMessage.style.display = "flex";
+//     playAgainMessage.innerText = "Waiting for opponent to accept...";
+//     socket.emit("play_again_request");
+//   }
+// }
+
 // Make a move
-function makeMove(index) {
-  socket.emit("make_move", index);
+function makeMove(data) {
+  socket.emit("make_move", data);
 }
 
 // Message Related Code
 
-messageInput.addEventListener("keypress", (event) => {
-  if (event.key === "Enter") {
-    sendMessage();
-  }
-});
+// messageInput.addEventListener("keypress", (event) => {
+//   if (event.key === "Enter") {
+//     sendMessage();
+//   }
+// });
 
 function sendMessage() {
   const message = document.getElementById("messageInput").value;

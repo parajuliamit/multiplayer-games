@@ -22,6 +22,9 @@ let movingDirection;
 let winner;
 let restartButton;
 
+const goatImageSrc = "../../images/goat.png";
+const tigerImageSrc = "../../images/tiger.png";
+
 const goatsAvailableDiv = document.getElementById("available");
 const goatsAliveDiv = document.getElementById("alive");
 const goatsKilledDiv = document.getElementById("killed");
@@ -29,8 +32,8 @@ const trappedDiv = document.getElementById("trapped");
 const turnImage = document.getElementById("turn");
 
 function preload() {
-  tigerImage = loadImage("../images/tiger.png");
-  goatImage = loadImage("../images/goat.png");
+  tigerImage = loadImage(tigerImageSrc);
+  goatImage = loadImage(goatImageSrc);
 }
 
 function setup() {
@@ -61,7 +64,7 @@ function resetGame() {
   setGoatCount();
   trappedDiv.innerText = 0;
   setAnimal(null);
-  turnImage.src = "../images/goat.png";
+  turnImage.src = goatImageSrc;
   turnImage.style.display = "block";
   setTimeout(() => {
     winner = null;
@@ -142,7 +145,7 @@ function draw() {
         restartButton = createButton("Play Again");
         restartButton.parent("game");
         restartButton.position(
-          width / 2 - restartButton.width / 2,
+          "auto",
           height / 2 + restartButton.height / 2,
           "absolute"
         );
@@ -390,7 +393,7 @@ function makeMove(x, y, deselect) {
           goatsAvailable--;
           goatsAlive++;
           setGoatCount();
-          turnImage.src = "../images/tiger.png";
+          turnImage.src = tigerImageSrc;
           goatTurn = false;
           const trappedTiger = getTigerTrapCount();
           trappedDiv.innerText = trappedTiger;
@@ -428,13 +431,13 @@ function validMove(i, j) {
       moveAnimal(i, j);
       goats[i][j] = true;
       goats[selectedAnimal.x][selectedAnimal.y] = false;
-      turnImage.src = "../images/tiger.png";
+      turnImage.src = tigerImageSrc;
       goatTurn = false;
     } else {
       moveAnimal(i, j);
       tigers[i][j] = true;
       tigers[selectedAnimal.x][selectedAnimal.y] = false;
-      turnImage.src = "../images/goat.png";
+      turnImage.src = goatImageSrc;
       goatTurn = true;
     }
     setAnimal(null);
@@ -464,7 +467,7 @@ function canKill(i, j) {
         winner = "tiger";
         return;
       }
-      turnImage.src = "../images/goat.png";
+      turnImage.src = goatImageSrc;
       goatTurn = true;
     }
   }
