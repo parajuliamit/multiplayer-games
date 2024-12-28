@@ -93,6 +93,8 @@ function updateMoveData(turn, moves, winner, next, lastMove, winCondition) {
     drawingTile = lastMove;
     drawingStep = 0;
     loop();
+  } else {
+    redraw();
   }
 }
 

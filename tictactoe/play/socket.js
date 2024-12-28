@@ -89,7 +89,6 @@ function startGame(room) {
   });
 
   socket.on("move_made", (result) => {
-    console.log(result);
     let winner = null;
     if (result.winner) {
       if (result.winner === socket.id) {
