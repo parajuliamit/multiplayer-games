@@ -104,7 +104,7 @@ function draw() {
       TILE_SIZE / 2,
       TILE_SIZE / 2
     );
-    if (currentPosition.dist(destinationPosition) < TILE_SIZE * 0.1) {
+    if (currentPosition.dist(destinationPosition) < 16) {
       movingAnimal = null;
       if (winner) {
         noLoop();
