@@ -1,9 +1,9 @@
 const CHOICES = ["🪨\nROCK", "📃\nPAPER", "✂️\nSCISSORS"];
 const WINNING = { 0: 2, 1: 0, 2: 1 };
 
-const OFFSET = 20;
+let OFFSET = 20;
 let CARD_WIDTH = 160;
-const CARD_HEIGHT = 240;
+let CARD_HEIGHT = 240;
 const colors = [];
 
 let resetButton;
@@ -25,8 +25,14 @@ let finalChoice = null;
 let computerFinalChoice = null;
 
 function setup() {
-  createCanvas(min(windowWidth, 560), 600);
-  CARD_WIDTH = (width - OFFSET * 4) / 3;
+  const w = min(windowWidth, 560);
+  OFFSET = w / 28;
+  CARD_WIDTH = (w - OFFSET * 4) / 3;
+  CARD_HEIGHT = CARD_WIDTH * 1.5;
+  const h = CARD_HEIGHT * 2.5;
+
+  createCanvas(w, h);
+
   colors.push(color(100, 150, 155));
   colors.push(color(100, 220, 150));
   colors.push(color(200, 25, 100));
