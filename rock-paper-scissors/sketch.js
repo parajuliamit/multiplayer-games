@@ -47,11 +47,17 @@ function setup() {
 }
 
 function mousePressed() {
+  clickTile(mouseX, mouseY);
+}
+
+function touchStarted() {
+  clickTile(mouseX, mouseY);
+}
+
+function clickTile(x, y) {
   if (finalChoice || movingDirection || movingSecondDirection) return;
   //   final choice
   if (selectedCard1 != null && selectedCard2 != null) {
-    const x = mouseX;
-    const y = mouseY;
     let selected;
     if (
       x >= width / 2 - CARD_WIDTH - OFFSET &&
@@ -108,8 +114,8 @@ function mousePressed() {
     return;
   }
 
-  const x = mouseX - OFFSET;
-  const y = mouseY;
+  x = x - OFFSET;
+  y = y;
   if (
     x > width - OFFSET ||
     x < 0 ||
