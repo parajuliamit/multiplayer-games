@@ -1,0 +1,49 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  color: white;
+  font-family: "Arial";
+}
+canvas {
+  display: block;
+  background-color: blue;
+  padding: 16px;
+  margin: 16px;
+}
+
+#game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#result {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  padding: 8px 12px;
+  background-color: blue;
+  color: white;
+  border-radius: 6px;
+}
+
+#restart {
+  background-color: red;
+}
