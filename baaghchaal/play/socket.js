@@ -43,11 +43,11 @@ function exitGame() {
   if (!confirm("Are you sure you want to leave the game?")) {
     return;
   }
-  window.location.href = "/baghchaal/";
+  window.location.href = "/baaghchaal/";
 }
 
 function startGame(room, role) {
-  socket = io("https://api.baghchaal.com");
+  socket = io("https://api.baaghchaal.com");
 
   socket.on("connect", () => {
     statusDiv.style.color = "green";
@@ -93,11 +93,11 @@ function startGame(room, role) {
   });
 
   socket.on("room_join_error", (error) => {
-    window.location.href = `/baghchaal?error=${error}`;
+    window.location.href = `/baaghchaal?error=${error}`;
   });
 
   socket.on("player_left", () => {
-    window.location.href = `/baghchaal?error=Opponent left the game`;
+    window.location.href = `/baaghchaal?error=Opponent left the game`;
   });
 
   socket.on("move_made", (roomInfo) => {
@@ -115,7 +115,7 @@ function startGame(room, role) {
       const playAgainButton = document.getElementById("playAgainButton");
       playAgainButton.style.display = "block";
       playAgainButton.addEventListener("click", () => {
-        window.location.href = "/baghchaal/";
+        window.location.href = "/baaghchaal/";
       });
     }
   });
@@ -139,7 +139,7 @@ function startGame(room, role) {
     showLoading("Reconnecting...");
     setTimeout(() => {
       if (socket.disconnected) {
-        window.location.href = "/baghchaal?error=Trouble connecting to server";
+        window.location.href = "/baaghchaal?error=Trouble connecting to server";
       }
     }, 5000);
   });

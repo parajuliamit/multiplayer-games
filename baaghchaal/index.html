@@ -2,16 +2,16 @@
 <html lang="en">
 
 <head>
-  <title>BaghChaal Game - Play With Friends</title>
-  <meta name="description" content="Play BaghChaal, the traditional Nepali board game, online. Enjoy this strategic game of tigers and goats with friends or against the computer.">
-  <meta name="keywords" content="BaghChaal, BaghChal, BaagChal, Bagchal, Baagchaal, Bagh Chal, Nepali board game, tigers and goats, online games, strategy games">
+  <title>BaaghChaal Game - Play With Friends</title>
+  <meta name="description" content="Play BaaghChaal, the traditional Nepali board game, online. Enjoy this strategic game of tigers and goats with friends or against the computer.">
+  <meta name="keywords" content="BaaghChaal, BaghChal, BaagChal, Bagchal, Baagchaal, Bagh Chal, Nepali board game, tigers and goats, online games, strategy games">
   <meta name="author" content="Amit Parajuli">
-  <meta property="og:title" content="BaghChaal Game - Play With Friends">
-  <meta property="og:description" content="Play BaghChaal, the traditional Nepali board game, online. Enjoy this strategic game of tigers and goats with friends or against the computer.">
-  <meta property="og:image" content="https://baghchaal.com/images/og-image.webp">
-  <meta property="og:url" content="https://baghchaal.com">
+  <meta property="og:title" content="BaaghChaal Game - Play With Friends">
+  <meta property="og:description" content="Play BaaghChaal, the traditional Nepali board game, online. Enjoy this strategic game of tigers and goats with friends or against the computer.">
+  <meta property="og:image" content="https://baaghchaal.com/images/og-image.webp">
+  <meta property="og:url" content="https://baaghchaal.com">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="BaghChaal Game">
+  <meta property="og:site_name" content="BaaghChaal Game">
 
   <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon/favicon-32x32.png">
@@ -72,13 +72,13 @@
   <header>
     <a href="/">
       <div style="display: flex; align-items: center;"> <img src="../images/tiger.png" width="50" height="50">
-        <h1>BaghChaal</h1><img src="../images/goat.png" width="50" height="50">
+        <h1>BaaghChaal</h1><img src="../images/goat.png" width="50" height="50">
       </div>
 
     </a>
     <nav>
       <a href="/">Home</a>
-      <a href="/baghchaal">Play Baghchaal</a>
+      <a href="/baaghchaal">Play Baaghchaal</a>
       <a href="/tictactoe">Infinite TicTacToe</a>
       <a href="/rock-paper-scissors/">Rock Paper Scissors -1</a>
       <a href="/connectfour">Connect Four</a>
@@ -88,17 +88,17 @@
   <div style="display: flex; justify-content: center;" id="container">
     <div id="info">
       <h1>🐯 बाघ चाल 🐐</h1>
-      <p style="margin: 8px;">Welcome to BaghChaal Multiplayer!</p>
+      <p style="margin: 8px;">Welcome to BaaghChaal Multiplayer!</p>
       <div id="create" style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 300px;">
-        <a href="/baghchaal/local/" style="width: 100%; margin: 4px;">
+        <a href="/baaghchaal/local/" style="width: 100%; margin: 4px;">
           <button id="play_local">Play Locally</button>
         </a>
         <p style="margin: 4px;">OR</p>
-        <!-- <a href="/baghchaal/play?type=random" style="width: 100%; margin: 4px;"> -->
+        <!-- <a href="/baaghchaal/play?type=random" style="width: 100%; margin: 4px;"> -->
         <button id="random_match">Play Online</button>
         <!-- </a> -->
         <p style="margin: 4px;">OR</p>
-        <!-- <a href="/baghchaal/play?type=create" style="width: 100%; margin: 4px;"> -->
+        <!-- <a href="/baaghchaal/play?type=create" style="width: 100%; margin: 4px;"> -->
         <button id="create_button">Create Private Game</button>
         <!-- </a> -->
         <p style="margin: 4px;">OR</p>
@@ -131,7 +131,7 @@
   </div>
   <!-- Modal Overlay Ends -->
   <footer>
-    <p>&copy; 2025 BaghChaal.com. All rights reserved.</p>
+    <p>&copy; 2025 BaaghChaal.com. All rights reserved.</p>
   </footer>
   <script>
     const modalOverlay = document.getElementById('modalOverlay');
@@ -142,14 +142,14 @@
 
     randomMatchButton.onclick = () => {
       modalOverlay.style.display = 'flex';
-      playAsGoat.href = '/baghchaal/play?type=random&role=goat';
-      playAsTiger.href = '/baghchaal/play?type=random&role=tiger';
+      playAsGoat.href = '/baaghchaal/play?type=random&role=goat';
+      playAsTiger.href = '/baaghchaal/play?type=random&role=tiger';
     }
 
     createButton.onclick = () => {
       modalOverlay.style.display = 'flex';
-      playAsGoat.href = '/baghchaal/play?type=create&role=goat';
-      playAsTiger.href = '/baghchaal/play?type=create&role=tiger';
+      playAsGoat.href = '/baaghchaal/play?type=create&role=goat';
+      playAsTiger.href = '/baaghchaal/play?type=create&role=tiger';
     }
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -169,7 +169,7 @@
       if (roomId?.length !== 4) {
         document.getElementById('join_error').innerText = 'Room ID must be 4 characters long.';
       } else {
-        window.location.href = `/baghchaal/play?room=${roomId}&type=join`;
+        window.location.href = `/baaghchaal/play?room=${roomId}&type=join`;
       }
     }
   </script>
