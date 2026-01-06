@@ -38,7 +38,7 @@ function exitGame() {
 }
 
 function startGame(room) {
-  socket = io("https://api.baaghchaal.com/rrr");
+  socket = io("https://api.baaghchaal.com/ttt");
 
   socket.on("connect", () => {
     statusDiv.style.color = "green";
